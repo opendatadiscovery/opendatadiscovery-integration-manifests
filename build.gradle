@@ -1,0 +1,95 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+    id 'io.github.gradle-nexus.publish-plugin' version '1.1.0' 
+}
+
+version = file('VERSION').text
+
+ext {
+    env = findProperty('env') ?: 'dev'
+}
+
+if (env == 'prod') {
+    signing {
+        sign(publishing.publications)
+    }
+}
+
+jar {
+    metaInf {
+        into "wizard" from "manifests"
+    }
+}
+
+publishing {
+    if (env == 'prod') {
+        repositories {
+            maven {
+                url "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2"
+                credentials {
+                    username sonatypeUsername
+                    password sonatypePassword
+                }
+            }
+        }
+    }
+
+    publications {
+        maven(MavenPublication) {
+            groupId = 'org.opendatadiscovery'
+            artifactId = 'opendatadiscovery-integration-manifests'
+            version = version
+
+            from components.java
+
+            artifact(sourceJar) {
+                classifier = 'sources'
+            }
+
+            artifact(javadocJar) {
+                classifier = 'javadoc'
+            }
+
+            pom {
+                name = 'ODD Integration Manifests'
+                description = 'OpenDataDiscovery Integration Manifests'
+                url = 'https://github.com/opendatadiscovery/opendatadiscovery-integration-manifests'
+
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'ndementev'
+                        name = 'Nikita Dementev'
+                        organization = 'opendatadiscovery.org'
+                    }
+                }
+
+                scm {
+                    connection = 'scm:git:git://github.com/opendatadiscovery/opendatadiscovery-integration-manifests.git'
+                    developerConnection = 'scm:git:git://github.com/opendatadiscovery/opendatadiscovery-integration-manifests.git'
+                    url = 'https://github.com/opendatadiscovery/opendatadiscovery-integration-manifests'
+                }
+            }
+        }
+    }
+}
+
+nexusPublishing {
+    repositories {
+        sonatype {
+            nexusUrl = uri("https://s01.oss.sonatype.org/service/local/")
+            snapshotRepositoryUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+
+            username = sonatypeUsername
+            password = sonatypePassword
+        }
+    }
+}
