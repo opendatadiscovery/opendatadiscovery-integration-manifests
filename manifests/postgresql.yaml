@@ -33,7 +33,7 @@ blocks:
       1. Navigate to the "Management" section and select "Collectors".
       2. Click on the "Add Collector" button to initiate the process.
       3. Input a unique name for the collector and, optionally, provide a namespace to further categorize and organize the entity. Additionally, you may include a brief description to give more context and information about the collector.
-      4. Click "Save" to finalize the setup, and take note of the generated token. This token will be required for incorporating it into the ODD Collector's configuration YAML file, ensuring secure communication between the two components..
+      4. Click "Save" to finalize the setup, and take note of the generated token. This token will be required for incorporating it into the ODD Collector's configuration YAML file, ensuring secure communication between the two components.
 
       ## ODD Collector
       The process of configuring the ODD Collector involves creating and customizing a single, well-structured YAML configuration file

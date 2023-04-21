@@ -1,32 +1,30 @@
-id: mysql
-name: MySQL
+id: clickhouse
+name: ClickHouse
 description: |
-  MySQL integration
+  ClickHouse integration
 blocks:
   - title: Overview
     content: |+
-      The MySQL integration significantly enhances data discovery and observability capabilities for MySQL databases, 
-      providing an efficient and powerful solution for users seeking to optimize their data management experience.
-      ## Utilizing ODD Collector with MySQL
-      To fully harness the potential of OpenDataDiscovery in conjunction with MySQL, 
-      users should utilize the [ODD Collector](https://github.com/opendatadiscovery/odd-collector). This dedicated agent relies exclusively on `information_schema` 
-      views to access and retrieve vital information about tables and views, including their associated schemas 
-      and metadata. By doing so, the ODD Collector ensures a non-intrusive approach that prevents any performance 
-      impact on the database.
-
+      The ClickHouse integration significantly improves data exploration and monitoring capabilities for ClickHouse databases, delivering an effective and powerful solution for users aiming to enhance their data management experience.
+      ## Utilizing ODD Collector with ClickHouse
+      To fully exploit the potential of OpenDataDiscovery in combination with ClickHouse, 
+      users should make use of the ODD Collector. This specialized agent relies solely on system database tables 
+      to access and obtain crucial information about tables and views, including their related schemas and metadata. 
+      In doing so, the ODD Collector guarantees a non-disruptive approach that avoids any performance impact on the database.
 
       > It is essential to understand that since the ODD Collector does not execute additional analytical queries against the actual data, 
       some metrics may not reflect precise values.
       For instance, the `rows_count` metric might provide an estimated number of rows in a table instead of an exact figure
   - title: Configure
     content: |+
-      ## MySQL
-      It is recommended to create a separate MySQL user with access policy to the information_schema only:
+      ## ClickHouse
+      It is recommended to create a separate ClickHouse user with access policy to the `system` tables only:
       ````sql
-      CREATE USER 'new_user'@'localhost' IDENTIFIED BY 'your_password_here';
-      GRANT SELECT ON information_schema.* TO 'new_user'@'localhost';
-      FLUSH PRIVILEGES;
+      CREATE USER <username>;
+      GRANT SELECT ON system.* TO <username>;
+      ALTER USER <username> IDENTIFIED WITH plaintext_password BY '<password>';
       ````
+
       ## ODD Platform
       To integrate ODD Collector with the ODD Platform, users must first establish a collector entity within the platform by following these steps:
 
@@ -49,18 +47,18 @@ blocks:
       token: ""
 
       plugins:
-        - type: mysql
+        - type: clickhouse
           # Data source's name
-          name: mysql_adapter
+          name: clickhouse_adapter
           # Optional Data source's description
-          description: "mysql sample database"
-          # MySQL database name
+          description: "clickhouse sample database"
+          # ClickHouse database name
           database: database
-          # MySQL host
+          # ClickHouse host
           host: host
-          # MySQL port
+          # ClickHouse port
           port: 5432
-          # MySQL user
+          # ClickHouse user
           user: user
           # MySQL user password
           password: password
@@ -72,7 +70,7 @@ blocks:
           default_pulling_interval: <Pulling interval>
           token: <Security token>
           plugins:
-            - type: mysql
+            - type: clickhouse
               name: {{ ds_name }}
               description: {{ plugin_description }}
               database: {{ plugin_database }}
