@@ -7,14 +7,13 @@ blocks:
     content: |+
       The ClickHouse integration significantly improves data exploration and monitoring capabilities for ClickHouse databases, delivering an effective and powerful solution for users aiming to enhance their data management experience.
       ## Utilizing ODD Collector with ClickHouse
-      To fully exploit the potential of OpenDataDiscovery in combination with ClickHouse, 
-      users should make use of the ODD Collector. This specialized agent relies solely on system database tables 
-      to access and obtain crucial information about tables and views, including their related schemas and metadata. 
+      To fully exploit the potential of OpenDataDiscovery in combination with ClickHouse,
+      users should make use of the ODD Collector. This specialized agent relies solely on system database tables
+      to access and obtain crucial information about tables and views, including their related schemas and metadata.
       In doing so, the ODD Collector guarantees a non-disruptive approach that avoids any performance impact on the database.
 
-      > It is essential to understand that since the ODD Collector does not execute additional analytical queries against the actual data, 
+      > It is essential to understand that since the ODD Collector does not execute additional analytical queries against the actual data,
       some metrics may not reflect precise values.
-      For instance, the `rows_count` metric might provide an estimated number of rows in a table instead of an exact figure
   - title: Configure
     content: |+
       ## ClickHouse
