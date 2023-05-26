@@ -1,0 +1,109 @@
+id: mssql
+name: Microsoft SQL Server
+description: |
+  Microsoft SQL Server integration
+blocks:
+  - title: Overview
+    content: |+
+      The Microsoft SQL Server integration significantly enhances data discovery and observability capabilities for Microsoft SQL Server databases,
+      providing an efficient and powerful solution for users seeking to optimize their data management experience.
+
+      ## Utilizing ODD Collector with Microsoft SQL Server
+      To fully harness the potential of OpenDataDiscovery in conjunction with Microsoft SQL Server,
+      users should utilize the [ODD Collector](https://github.com/opendatadiscovery/odd-collector). This dedicated agent relies exclusively on `information_schema`
+      views to access and retrieve vital information about tables and views, including their associated schemas
+      and metadata. By doing so, the ODD Collector ensures a non-intrusive approach that prevents any performance
+      impact on the database.
+
+      > It is essential to understand that since the ODD Collector does not execute additional analytical queries against the actual data,
+      some metrics may not reflect precise values.
+
+      > For count statistics against data take a look at [ODD Collector Profiler](https://github.com/opendatadiscovery/odd-collector-profiler) project.
+
+  - title: Configure
+    content: |+
+      ## Microsoft SQL Server
+      It is recommended to create a separate Microsoft SQL Server user with access policy to the information_schema only:
+      ````sql
+        CREATE LOGIN user_name WITH PASSWORD = 'yourStrong(!)Password';
+        CREATE USER user_name FOR LOGIN user_name;
+        GRANT SELECT TO user_name;
+      ````
+
+      ## ODD Platform
+      To integrate ODD Collector with the ODD Platform, users must first establish a collector entity within the platform by following these steps:
+
+      1. Navigate to the "Management" section and select "Collectors".
+      2. Click on the "Add Collector" button to initiate the process.
+      3. Input a unique name for the collector and, optionally, provide a namespace to further categorize and organize the entity. Additionally, you may include a brief description to give more context and information about the collector.
+      4. Click "Save" to finalize the setup, and take note of the generated token. This token will be required for incorporating it into the ODD Collector's configuration YAML file, ensuring secure communication between the two components.
+
+      ## ODD Collector
+      The process of configuring the ODD Collector involves creating and customizing a single, well-structured YAML configuration file
+
+      ````yaml
+      # ODD Platform's host URL
+      platform_host_url: https://your.odd.platform
+
+      # Default pulling interval in minutes, can be omitted to run collector once
+      default_pulling_interval: 10
+
+      # Collector's specific security token
+      token: ""
+
+      plugins:
+        - type: mssql
+        # Data source's name
+        name: mssql_adapter
+        # Optional Data source's description
+        description: "MSSQL Server sample database"
+        # MSSQL Server host
+        host: host
+        # MSSQL Server port
+        port: 1433
+        # MSSQL Server database name
+        database: database
+        # MSSQL Server user
+        user: user
+        # MSSQL Server user password
+        password: password
+      ````
+    snippets:
+      - template: |+
+        ````yaml
+         platform_host_url:  <ODD Platform URL>
+         default_pulling_interval: <Pulling interval>
+         token: <Security token>
+         plugins:
+           -	type: mssql
+              name: {{ ds_name }}
+              description: {{ plugin_description }}
+              host: {{ plugin_host }}
+              port: {{ plugin_port }}
+              database: {{ plugin_database }}
+              user: {{ plugin_user }}
+              password: <Password for {{ plugin_user }}>
+        ````
+      arguments:
+          - parameter: ds_name
+            name: Data source name
+            type: STRING
+          - parameter: plugin_description
+            name: Data source description
+            type: STRING
+          - parameter: plugin_host
+            name: Host
+            type: STRING
+          - parameter: plugin_port
+            name: Port
+            type: INTEGER
+          - parameter: plugin_database
+            name: Database name
+            type: STRING
+          - parameter: plugin_user
+            name: User
+            type: STRING
+          - parameter: plugin_password
+            name: Password
+            type: STRING
+
