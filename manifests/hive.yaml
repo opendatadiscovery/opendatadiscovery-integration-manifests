@@ -1,0 +1,131 @@
+id: hive
+name: Hive
+description: |
+  Hive Metastore integration
+blocks:
+  - title: Overview
+    content: |+
+      The Hive integration significantly improves data exploration and monitoring capabilities for Hive databases, delivering an effective and powerful solution for users aiming to enhance their data management experience.
+      ## Utilizing ODD Collector with Hive
+      To fully exploit the potential of OpenDataDiscovery in combination with Hive,
+      users should make use of the ODD Collector. This specialized agent relies solely on system database tables
+      to access and obtain crucial information about tables and views, including their metadata and statistics.
+      In doing so, the ODD Collector guarantees a non-disruptive approach that avoids any performance impact on the database.
+
+      > It is essential to understand that since the ODD Collector does not execute additional analytical queries against the actual data,
+      some metrics may not reflect precise values.
+  - title: Configure
+    content: |+
+      ## Hive
+      Column level statistics can be fetched with metadata from Hive Metastore. In case of Hive configured as `hive.stats.autogather=false;`
+      you can automatically calculate statistics using the command below.
+      ````sql
+      ANALYZE TABLE tablename COMPUTE STATISTICS FOR COLUMNS;
+      ````
+
+      ## ODD Platform
+      To integrate ODD Collector with the ODD Platform, users must first establish a collector entity within the platform by following these steps:
+
+      1. Navigate to the "Management" section and select "Collectors".
+      2. Click on the "Add Collector" button to initiate the process.
+      3. Input a unique name for the collector and, optionally, provide a namespace to further categorize and organize the entity. Additionally, you may include a brief description to give more context and information about the collector.
+      4. Click "Save" to finalize the setup, and take note of the generated token. This token will be required for incorporating it into the ODD Collector's configuration YAML file, ensuring secure communication between the two components.
+
+      ## ODD Collector
+      The process of configuring the ODD Collector involves creating and customizing a single, well-structured YAML configuration file
+
+      ````yaml
+      # ODD Platform's host URL
+      platform_host_url: https://your.odd.platform
+
+      # Default pulling interval in minutes, can be omit to run collector once
+      default_pulling_interval: 10
+
+      # Chunk size for ingestion, can be omit to use default value
+      chunk_size: 1000
+
+      # Collector's specific security token
+      token: ""
+
+      - type: hive
+        # Data source's name
+        name: hive_adapter_new
+        # Optional Data source's description
+        description: "hive sample database"
+        # Optional boolean. Defaults to False. If true, the adapter will fetch column level statistics from Hive Metastore and store them in the ODD Platform.
+        count_statistics: False
+        # Hive Metastore connection parameters
+        connection_params:
+          # What port Hive Metastore runs on
+          scheme: # "http" | "https". Defaults to None.
+          # What host Hive Metastore runs on
+          host: localhost
+          # What port Hive Metastore runs on. Defaults to 10000 or 1000 if scheme is http or https
+          port: 10000
+          # Target database name
+          database: default
+          # Optional type of authentication to use "BASIC" |  "NOSASL" | "KERBEROS" | "NONE". Defaults to NONE
+          auth: NONE
+          # Optional Username to use with auth='KERBEROS' only
+          kerberos_service_name:
+          # Optional User name for authentication
+          username:
+          # Optional Password for authentication
+          password:
+      ````
+    snippets:
+      - template: |+
+          ````yaml
+          platform_host_url: <ODD Platform URL>
+          default_pulling_interval: <Pulling interval>
+          token: <Security token>
+          chunk_size: 1000
+          plugins:
+            - type: hive
+              name: {{ ds_name }}
+              description: {{ plugin_description }}
+              count_statistics: {{ count_statistics }}
+              connection_params:
+                scheme: {{ hive_scheme }}
+                host: {{ hive_host }}
+                port: {{ hive_port }}
+                database: {{ hive_database }}
+                auth: {{ hive_auth }}
+                kerberos_service_name: {{ kerberos_service_name }}
+                username: {{ hive_username }}
+                password: <Password for {{ hive_username }}>
+          ````
+        arguments:
+          - parameter: ds_name
+            name: Data source name
+            type: STRING
+          - parameter: plugin_description
+            name: Data source description
+            type: STRING
+          - parameter: count_statistics
+            name: Flag to count statistics
+            type: BOOLEAN
+          - parameter: hive_scheme
+            name: Hive scheme
+            type: STRING
+          - parameter: hive_host
+            name: Hive host
+            type: STRING
+          - parameter: hive_port
+            name: Hive port
+            type: INTEGER
+          - parameter: hive_database
+            name: Hive database
+            type: STRING
+          - parameter: hive_auth
+            name: Hive auth
+            type: STRING
+          - parameter: kerberos_service_name
+            name: Kerberos service name
+            type: STRING
+          - parameter: hive_username
+            name: Hive username
+            type: STRING
+          - parameter: hive_password
+            name: Hive password
+            type: STRING
