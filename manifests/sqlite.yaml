@@ -1,0 +1,80 @@
+id: sqlite
+name: SQLite
+description: |
+  SQLite integration
+blocks:
+  - title: Overview
+    content: |+
+      The SQLite integration significantly enhances data discovery and observability capabilities for SQLite databases,
+      providing an efficient and powerful solution for users seeking to optimize their data management experience.
+      ## Utilizing ODD Collector with SQLite
+      To fully harness the potential of OpenDataDiscovery in conjunction with SQLite,
+      users should utilize the [ODD Collector](https://github.com/opendatadiscovery/odd-collector). This dedicated agent relies exclusively on `sqlite_master`
+      to access and retrieve vital information about tables and views, including their associated schemas
+      and metadata. By doing so, the ODD Collector ensures a non-intrusive approach that prevents any performance
+      impact on the database.
+
+
+      > SQLite integration cannot utilize an in-memory database because it lacks
+      the ability to connect and share data seamlessly across multiple processes or sessions.
+
+  - title: Configure
+    content: |+
+      ## SQLite
+      Create database: use the .open command followed by the path to the database file
+      ````sql
+      CREATE TABLE users (
+          id INTEGER PRIMARY KEY,
+          name TEXT,
+          email TEXT
+      );
+
+      INSERT INTO users (name, email) VALUES ('John Doe', 'john@example.com');
+      ````
+      Use .exit to quit SQLite shell.
+      ## ODD Platform
+      To integrate ODD Collector with the ODD Platform, users must first establish a collector entity within the platform by following these steps:
+
+      1. Navigate to the "Management" section and select "Collectors".
+      2. Click on the "Add Collector" button to initiate the process.
+      3. Input a unique name for the collector and, optionally, provide a namespace to further categorize and organize the entity. Additionally, you may include a brief description to give more context and information about the collector.
+      4. Click "Save" to finalize the setup, and take note of the generated token. This token will be required for incorporating it into the ODD Collector's configuration YAML file, ensuring secure communication between the two components.
+
+      ## ODD Collector
+      The process of configuring the ODD Collector involves creating and customizing a single, well-structured YAML configuration file
+
+      ````yaml
+      # ODD Platform's host URL
+      platform_host_url: https://your.odd.platform
+
+      # Default pulling interval in minutes
+      default_pulling_interval: 10
+
+      # Collector's specific security token
+      token: ""
+
+      plugins:
+        - type: sqlite
+          # Data source's name
+          name: sqlite_adapter
+          # Path to sqlite db file
+          data_source: /path/to/local/file.db
+      ````
+    snippets:
+      - template: |+
+          ````yaml
+          platform_host_url: <ODD Platform URL>
+          default_pulling_interval: <Pulling interval>
+          token: <Security token>
+          plugins:
+            - type: sqlite
+              name: {{ ds_name }}
+              data_source: {{ ds_path }}
+          ````
+        arguments:
+          - parameter: ds_name
+            name: Data source name
+            type: STRING
+          - parameter: ds_path
+            name: Data source path
+            type: STRING
