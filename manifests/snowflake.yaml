@@ -1,0 +1,138 @@
+id: snowflake
+name: Snowflake
+description: |
+  Snowflake integration
+blocks:
+  - title: Overview
+    content: |+
+      The Snowflake integration significantly enhances data discovery and observability capabilities for Snowflake warehouse,
+      providing an efficient and powerful solution for users seeking to optimize their data management experience.
+
+      ## Utilizing ODD Collector with Snowflake
+      To fully leverage the potential of OpenDataDiscovery with Snowflake, users should use the ODD Collector,
+      a dedicated agent that exclusively relies on ACCOUNT_USAGE.OBJECT_DEPENDENCIES and INFORMATION_SCHEMA.*
+      views to retrieve essential information about tables and views, including their associated schemas and metadata.
+      This approach ensures that the ODD Collector operates non-intrusively without any performance impact on the database
+
+
+      > It's important to note that the ODD Collector doesn't execute additional analytical queries against the actual data.
+
+  - title: Configure
+    content: |+
+      ## Snowflake
+      > It's just a recommendation, create a new role/user with the necessary privileges according to your company policy.
+
+      It is recommended to create a separated Snowflake user with access policy to the `snowflake.account_usage.object_dependencies` and `information_schema` views only:
+
+      Log in to your Snowflake account with an administrator account.
+
+      Create a new role that includes the necessary grants with the following SQL script:
+
+      ````sql
+      CREATE ROLE ODD_ROLE;
+      CREATE USER ODD_USER PASSWORD = 'password' DEFAULT_WAREHOUSE = COMPUTE_WH DEFAULT_ROLE = ODD_ROLE;
+      GRANT ROLE ODD_ROLE TO USER ODD_USER;
+      GRANT DATABASE ROLE OBJECT_VIEWER TO ROLE ODD_ROLE;
+      ````
+
+      Now the ODD_USER will have access to the snowflake.account_usage.object_dependencies view, through the ODD_ROLE role.
+      You can provide the user's credentials to the ODD Collector agent for it to retrieve the necessary metadata.
+
+      ### Warehouse
+      Since the adapter only reads data from views and doesn't require high performance,
+      a good recommendation would be to create a separate warehouse with lower cost to handle this workload.
+      ````sql
+      CREATE WAREHOUSE ODD_WH WITH WAREHOUSE_SIZE = XSMALL;
+      GRANT USAGE ON WAREHOUSE ODD_WH TO ROLE ODD_ROLE;
+      ````
+
+
+      ## ODD Platform
+      To integrate ODD Collector with the ODD Platform, users must first establish a collector entity within the platform by following these steps:
+
+      1. Navigate to the "Management" section and select "Collectors".
+      2. Click on the "Add Collector" button to initiate the process.
+      3. Input a unique name for the collector and, optionally, provide a namespace to further categorize and organize the entity. Additionally, you may include a brief description to give more context and information about the collector.
+      4. Click "Save" to finalize the setup, and take note of the generated token. This token will be required for incorporating it into the ODD Collector's configuration YAML file, ensuring secure communication between the two components.
+
+      ## ODD Collector
+      The process of configuring the ODD Collector involves creating and customizing a single, well-structured YAML configuration file
+
+      ````yaml
+      # ODD Platform's host URL
+      platform_host_url: https://your.odd.platform
+
+      # Default pulling interval in minutes
+      default_pulling_interval: 10
+
+      # Collector's specific security token
+      token: ""
+
+      plugins:
+        - type: snowflake
+          # Data source's name
+          name: postgresql_adapter
+          # Optional Data source's description
+          description: "Snowflake sample database"
+
+          # You can retrieve the link to the host from your Snowflake account, and it may appear in the format <account>.<region>.snowflakecomputing.com.
+          host: host
+          # Optional  parameter, If you need to specify a non-default port for the host.
+          port: port
+          # A Snowflake user with granted access to INFORMATION_SCHEMA and ACCOUNT_USAGE.
+          user: user
+          # Snowflake user password
+          password: password
+          # A Snowflake database used for reading metadata about the entities within that database.
+          database: database
+          # An active warehouse associated with a user in Snowflake.
+          warehouse: warehouse
+          # Optional account locator, if omit, will be taken from host.
+          account: account
+      ````
+    snippets:
+      - template: |+
+          ````yaml
+          platform_host_url: <ODD Platform URL>
+          default_pulling_interval: <Pulling interval>
+          token: <Security token>
+          plugins:
+            - type: snowflake
+              name: {{ ds_name}}
+              description: {{ plugin_description }}
+              host: {{ plugin_host }}
+              port: {{ plugin_port }}
+              user: {{ plugin_user }}
+              password: {{ plugin_password }}
+              account: {{ plugin_account }}
+              database: {{ plugin_database }}
+              warehouse: {{ plugin_warehouse }}
+          ````
+        arguments:
+          - parameter: ds_name
+            name: Data source name
+            type: STRING
+          - parameter: plugin_description
+            name: Data source description
+            type: STRING
+          - parameter: plugin_host
+            name: Host
+            type: STRING
+          - parameter: plugin_port
+            name: Port
+            type: INTEGER
+          - parameter: plugin_user
+            name: User
+            type: STRING
+          - parameter: plugin_password
+            name: Password
+            type: STRING
+          - parameter: plugin_database
+            name: Database name
+            type: STRING
+          - parameter: plugin_warehouse
+            name: Warehouse
+            type: STRING
+          - parameter: plugin_account
+            name: Account
+            type: STRING
