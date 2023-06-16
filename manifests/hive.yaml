@@ -77,7 +77,7 @@ blocks:
       - template: |+
           ````yaml
           platform_host_url: {{ platform_url }}
-          default_pulling_interval: 1
+          default_pulling_interval: 10
           token: <Security token>
           chunk_size: 1000
           plugins:
