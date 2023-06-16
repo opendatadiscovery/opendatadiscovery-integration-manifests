@@ -29,14 +29,9 @@ blocks:
       Create a new role that includes the necessary grants with the following SQL script:
 
       ````sql
-      CREATE ROLE ODD_ROLE;
-      CREATE USER ODD_USER PASSWORD = 'password' DEFAULT_WAREHOUSE = COMPUTE_WH DEFAULT_ROLE = ODD_ROLE;
-      GRANT ROLE ODD_ROLE TO USER ODD_USER;
+      CREATE OR REPLACE ROLE ODD_ROLE;
       GRANT DATABASE ROLE OBJECT_VIEWER TO ROLE ODD_ROLE;
       ````
-
-      Now the ODD_USER will have access to the snowflake.account_usage.object_dependencies view, through the ODD_ROLE role.
-      You can provide the user's credentials to the ODD Collector agent for it to retrieve the necessary metadata.
 
       ### Warehouse
       Since the adapter only reads data from views and doesn't require high performance,
@@ -45,7 +40,14 @@ blocks:
       CREATE WAREHOUSE ODD_WH WITH WAREHOUSE_SIZE = XSMALL;
       GRANT USAGE ON WAREHOUSE ODD_WH TO ROLE ODD_ROLE;
       ````
-
+      Create user
+      ````sql
+      CREATE OR REPLACE USER ODD_USER PASSWORD = 'password' DEFAULT_WAREHOUSE = ODD_WH DEFAULT_ROLE = ODD_ROLE;
+      GRANT ROLE ODD_ROLE TO USER ODD_USER;
+      ````
+      
+      Now the ODD_USER will have access to the snowflake.account_usage.object_dependencies view, through the ODD_ROLE role.
+      You can provide the user's credentials to the ODD Collector agent for it to retrieve the necessary metadata.
 
       ## ODD Platform
       To integrate ODD Collector with the ODD Platform, users must first establish a collector entity within the platform by following these steps:
