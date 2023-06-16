@@ -17,8 +17,8 @@ blocks:
   - title: Configure
     content: |+
       ## Databricks
-      It recommended to follow official instuctions on how to setup Unity Catalog on [AWS](https://docs.databricks.com/data-governance/unity-catalog/get-started.html) and on [Azure](https://learn.microsoft.com/en-us/azure/databricks/data-governance/unity-catalog/get-started)
-      Make sure you have Administation account rights of Databricks, and have Premium plan for working with Unity Catalog. 
+      It recommended to follow official instructions on how to setup Unity Catalog on [AWS](https://docs.databricks.com/data-governance/unity-catalog/get-started.html) and on [Azure](https://learn.microsoft.com/en-us/azure/databricks/data-governance/unity-catalog/get-started)
+      Make sure you have Administration account rights of Databricks, and have Premium plan for working with Unity Catalog. 
 
       ## ODD Platform
       To integrate ODD Collector with the ODD Platform, users must first establish a collector entity within the platform by following these steps:
@@ -31,7 +31,7 @@ blocks:
       ## ODD Collector
       The process of configuring the ODD Collector involves creating and customizing a single, well-structured YAML configuration file
 
-      For generating personal access tokens it is recommended to follow official instuctions for:
+      For generating personal access tokens it is recommended to follow official instructions for:
         - [AWS](https://docs.databricks.com/administration-guide/access-control/tokens.html#enable-or-disable-token-based-authentication-for-the-workspace)
         - [Azure](https://learn.microsoft.com/en-us/azure/databricks/dev-tools/auth#--azure-databricks-personal-access-token-authentication)
       **Do not confuse with ODD security token**
@@ -58,8 +58,8 @@ blocks:
     snippets:
       - template: |+
           ````yaml
-          platform_host_url: <ODD Platform URL>
-          default_pulling_interval: <Pulling interval>
+          platform_host_url: {{ platform_url }}
+          default_pulling_interval: 10
           token: <Security token>
           plugins:
             - type: databricks
@@ -68,12 +68,15 @@ blocks:
               token: {{ plugin_access_token  }}
           ````
         arguments:
+          - parameter: platform_url
+            type: STRING
+            static: true
           - parameter: ds_name
             name: Data source name
             type: STRING
-          - parameter: workspace
+          - parameter: plugin_workspace
             name: Data source workspace url. Do not use relative path. Example of url https://dbc-0000c00c-0000.cloud.databricks.com
             type: STRING
-          - parameter: token
+          - parameter: plugin_access_token
             name: Data source personal access token
             type: STRING
