@@ -93,12 +93,12 @@ blocks:
     snippets:
       - template: |+
           ````yaml
-          platform_host_url: <ODD Platform URL>
-          default_pulling_interval: <Pulling interval>
+          platform_host_url: {{ platform_url }}
+          default_pulling_interval: 10
           token: <Security token>
           plugins:
             - type: snowflake
-              name: {{ ds_name}}
+              name: {{ ds_name }}
               description: {{ plugin_description }}
               host: {{ plugin_host }}
               port: {{ plugin_port }}
@@ -109,6 +109,9 @@ blocks:
               warehouse: {{ plugin_warehouse }}
           ````
         arguments:
+          - parameter: platform_url
+            type: STRING
+            static: true
           - parameter: ds_name
             name: Data source name
             type: STRING

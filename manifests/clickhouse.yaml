@@ -65,8 +65,8 @@ blocks:
     snippets:
       - template: |+
           ````yaml
-          platform_host_url: <ODD Platform URL>
-          default_pulling_interval: <Pulling interval>
+          platform_host_url: {{ platform_url }}
+          default_pulling_interval: 10
           token: <Security token>
           plugins:
             - type: clickhouse
@@ -79,6 +79,9 @@ blocks:
               password: <Password for {{ plugin_user }}>
           ````
         arguments:
+          - parameter: platform_url
+            type: STRING
+            static: true
           - parameter: ds_name
             name: Data source name
             type: STRING
