@@ -1,0 +1,82 @@
+id: databricks
+name: Databricks
+description: |
+  Databricks integration
+blocks:
+  - title: Overview
+    content: |+
+      ## Utilizing ODD Collector with Databricks
+      To fully harness the potential of OpenDataDiscovery in conjunction with Databricks, 
+      users should utilize the [ODD Collector](https://github.com/opendatadiscovery/odd-collector). This dedicated agent relies exclusively on `information_schema` 
+      views to access and retrieve vital information about unity catalogs and data lakes, including their associated schemas 
+      and metadata. By doing so, the ODD Collector ensures a non-intrusive approach that prevents any performance 
+      impact on the database.
+
+      > It is essential to understand that since the ODD Collector does not execute additional analytical queries against the actual data, 
+      some metrics may not reflect precise values.
+  - title: Configure
+    content: |+
+      ## Databricks
+      It recommended to follow official instructions on how to setup Unity Catalog on [AWS](https://docs.databricks.com/data-governance/unity-catalog/get-started.html) and on [Azure](https://learn.microsoft.com/en-us/azure/databricks/data-governance/unity-catalog/get-started)
+      Make sure you have Administration account rights of Databricks, and have Premium plan for working with Unity Catalog. 
+
+      ## ODD Platform
+      To integrate ODD Collector with the ODD Platform, users must first establish a collector entity within the platform by following these steps:
+
+      1. Navigate to the "Management" section and select "Collectors".
+      2. Click on the "Add Collector" button to initiate the process.
+      3. Input a unique name for the collector and, optionally, provide a namespace to further categorize and organize the entity. Additionally, you may include a brief description to give more context and information about the collector.
+      4. Click "Save" to finalize the setup, and take note of the generated token. This token will be required for incorporating it into the ODD Collector's configuration YAML file, ensuring secure communication between the two components.
+
+      ## ODD Collector
+      The process of configuring the ODD Collector involves creating and customizing a single, well-structured YAML configuration file
+
+      For generating personal access tokens it is recommended to follow official instructions for:
+        - [AWS](https://docs.databricks.com/administration-guide/access-control/tokens.html#enable-or-disable-token-based-authentication-for-the-workspace)
+        - [Azure](https://learn.microsoft.com/en-us/azure/databricks/dev-tools/auth#--azure-databricks-personal-access-token-authentication)
+      **Do not confuse with ODD security token**
+
+      ````yaml
+      # ODD Platform's host URL
+      platform_host_url: https://your.odd.platform
+
+      # Default pulling interval in minutes
+      default_pulling_interval: 10
+
+      # Collector's specific security token
+      token: ""
+
+      plugins:
+        - type: databricks
+          # Data source's name
+          name: databricks_adapter
+          # Databricks workspace url
+          workspace: ""
+          # Databricks personal access token
+          token: ""
+      ````
+    snippets:
+      - template: |+
+          ````yaml
+          platform_host_url: {{ platform_url }}
+          default_pulling_interval: 10
+          token: <Security token>
+          plugins:
+            - type: databricks
+              name: {{ ds_name }}
+              workspace: {{ plugin_workspace }}
+              token: {{ plugin_access_token  }}
+          ````
+        arguments:
+          - parameter: platform_url
+            type: STRING
+            static: true
+          - parameter: ds_name
+            name: Data source name
+            type: STRING
+          - parameter: plugin_workspace
+            name: Data source workspace url. Do not use relative path. Example of url https://dbc-0000c00c-0000.cloud.databricks.com
+            type: STRING
+          - parameter: plugin_access_token
+            name: Data source personal access token
+            type: STRING
