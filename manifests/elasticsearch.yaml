@@ -1,0 +1,104 @@
+id: elasticsearch
+name: Elasticsearch
+description: |
+  Elasticsearch integration
+blocks:
+  - title: Overview
+    content: |+
+      The Elasticsearch integration significantly improves data exploration and monitoring capabilities for Elasticsearch databases, delivering an effective and powerful solution for users aiming to enhance their data management experience.
+      ## Utilizing ODD Collector with Elasticsearch
+      To fully exploit the potential of OpenDataDiscovery in combination with Elasticsearch,
+      users should make use of the ODD Collector. This specialized agent relies solely on system database indexes, streams
+      to access and obtain crucial information about tables and views, including their related schemas and metadata.
+      In doing so, the ODD Collector guarantees a non-disruptive approach that avoids any performance impact on the database.
+
+      > It is essential to understand that since the ODD Collector does not execute additional analytical queries against the actual data,
+      some metrics may not reflect precise values.
+  - title: Configure
+    content: |+
+      ## Elasticsearch
+      It is recommended to create a separate Elasticsearch user with access policy to the `system` tables only:
+
+      ## ODD Platform
+      To integrate ODD Collector with the ODD Platform, users must first establish a collector entity within the platform by following these steps:
+
+      1. Navigate to the "Management" section and select "Collectors".
+      2. Click on the "Add Collector" button to initiate the process.
+      3. Input a unique name for the collector and, optionally, provide a namespace to further categorize and organize the entity. Additionally, you may include a brief description to give more context and information about the collector.
+      4. Click "Save" to finalize the setup, and take note of the generated token. This token will be required for incorporating it into the ODD Collector's configuration YAML file, ensuring secure communication between the two components.
+
+      ## ODD Collector
+      The process of configuring the ODD Collector involves creating and customizing a single, well-structured YAML configuration file
+
+      ````yaml
+      # ODD Platform's host URL
+      platform_host_url: https://your.odd.platform
+
+      # Default pulling interval in minutes
+      default_pulling_interval: 10
+
+      # Collector's specific security token
+      token: ""
+
+      plugins:
+        - type: elasticsearch
+          # Data source's name
+          name: elasticsearch_adapter
+          # Optional Data source's description
+          description: "elasticsearch sample"
+          # Elasticsearch host
+          host: host
+          # Elasticsearch port
+          port: 5432
+          # Elasticsearch http authitentication
+          http_auth: ""     # Optional string, default None
+          # Is SSL enabled
+          use_ssl: ""       # Optional boolean, default None
+          # Is verification enabled
+          verify_certs: ""  # Optional boolean, default None
+          # Path to CA certs
+          ca_certs: ""      # Optional string, default None
+
+      ````
+    snippets:
+      - template: |+
+          ````yaml
+          platform_host_url: <ODD Platform URL>
+          default_pulling_interval: <Pulling interval>
+          token: <Security token>
+          plugins:
+            - type: elasticsearch
+              name: {{ ds_name }}
+              description: {{ plugin_description }}
+              host: {{ plugin_host }}
+              port: {{ plugin_port }}
+              http_auth: {{ es_http_auth }}
+              use_ssl: {{ es_use_ssl }}
+              verify_certs: {{ es_verify_certs_enabled }}
+              ca_certs: {{ es_path_to_ca_certs }}
+          ````
+        arguments:
+          - parameter: ds_name
+            name: Data source name
+            type: STRING
+          - parameter: plugin_description
+            name: Data source description
+            type: STRING
+          - parameter: plugin_host
+            name: Host
+            type: STRING
+          - parameter: plugin_port
+            name: Port
+            type: INTEGER
+          - parameter: http_auth
+            name: HTTP authitentication
+            type: STRING
+          - parameter: use_ssl
+            name: Is SSL enabled
+            type: BOOLEAN
+          - parameter: verify_certs
+            name: Is verification certs is enabled
+            type: BOOLEAN
+          - parameter: ca_certs
+            name: Path to CA certs
+            type: STRING
