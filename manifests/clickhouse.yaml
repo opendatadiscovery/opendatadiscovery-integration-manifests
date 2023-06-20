@@ -59,7 +59,7 @@ blocks:
           port: 5432
           # ClickHouse user
           user: user
-          # MySQL user password
+          # ClickHouse user password
           password: password
       ````
     snippets:
