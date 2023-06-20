@@ -1,18 +1,15 @@
-id: mysql
-name: MySQL
+id: neo4j
+name: Neo4j
 description: |
-  MySQL integration
+  Neo4j integration
 blocks:
   - title: Overview
     content: |+
-      The MySQL integration significantly enhances data discovery and observability capabilities for MySQL databases,
+      The Neo4j integration significantly enhances data discovery and observability capabilities for Neo4j databases,
       providing an efficient and powerful solution for users seeking to optimize their data management experience.
-      ## Utilizing ODD Collector with MySQL
-      To fully harness the potential of OpenDataDiscovery in conjunction with MySQL,
-      users should utilize the [ODD Collector](https://github.com/opendatadiscovery/odd-collector). This dedicated agent relies exclusively on `information_schema`
-      views to access and retrieve vital information about tables and views, including their associated schemas
-      and metadata. By doing so, the ODD Collector ensures a non-intrusive approach that prevents any performance
-      impact on the database.
+      ## Utilizing ODD Collector with Neo4j
+      To fully harness the potential of OpenDataDiscovery in conjunction with Neo4j,
+      users should utilize the [ODD Collector](https://github.com/opendatadiscovery/odd-collector).
 
 
       > It is essential to understand that since the ODD Collector does not execute additional analytical queries against the actual data,
@@ -20,13 +17,6 @@ blocks:
       For instance, the `rows_count` metric might provide an estimated number of rows in a table instead of an exact figure
   - title: Configure
     content: |+
-      ## MySQL
-      It is recommended to create a separate MySQL user with access policy to the information_schema only:
-      ````sql
-      CREATE USER 'new_user'@'localhost' IDENTIFIED BY 'your_password_here';
-      GRANT SELECT ON information_schema.* TO 'new_user'@'localhost';
-      FLUSH PRIVILEGES;
-      ````
       ## ODD Platform
       To integrate ODD Collector with the ODD Platform, users must first establish a collector entity within the platform by following these steps:
 
@@ -49,23 +39,21 @@ blocks:
       token: ""
 
       plugins:
-        - type: mysql
+        - type: neo4j
           # Data source's name
-          name: mysql_adapter
+          name: neoj4_adapter
           # Optional Data source's description
-          description: "mysql sample database"
-          # MySQL host
+          description: "Neo4j sample database"
+          # Neo4j host
           host: host
-          # MySQL port
+          # Neo4j port
           port: port
-          # MySQL database name
+          # Neo4j database name
           database: database
-          # MySQL user
+          # Neo4j user
           user: user
-          # MySQL user password
+          # Neo4j user password
           password: password
-          # SSL mode
-          ssl_disabled: False
       ````
     snippets:
       - template: |+
@@ -74,7 +62,7 @@ blocks:
           default_pulling_interval: 10
           token: <Security token>
           plugins:
-            - type: mysql
+            - type: neo4j
               name: {{ ds_name }}
               description: {{ plugin_description }}
               host: {{ plugin_host }}
@@ -82,7 +70,6 @@ blocks:
               database: {{ plugin_database }}
               user: {{ plugin_user }}
               password: <Password for {{ plugin_user }}>
-              ssl_disabled: {{ ssl_disabled }}
           ````
         arguments:
           - parameter: platform_url
@@ -106,6 +93,3 @@ blocks:
           - parameter: plugin_user
             name: User
             type: STRING
-          - parameter: ssl_disabled
-            name: SSL disabled
-            type: BOOLEAN
