@@ -6,19 +6,19 @@ blocks:
   - title: Overview
     content: |+
       ## Utilizing ODD Collector with Databricks
-      To fully harness the potential of OpenDataDiscovery in conjunction with Databricks, 
-      users should utilize the [ODD Collector](https://github.com/opendatadiscovery/odd-collector). This dedicated agent relies exclusively on `information_schema` 
-      views to access and retrieve vital information about unity catalogs and data lakes, including their associated schemas 
-      and metadata. By doing so, the ODD Collector ensures a non-intrusive approach that prevents any performance 
+      To fully harness the potential of OpenDataDiscovery in conjunction with Databricks,
+      users should utilize the [ODD Collector](https://github.com/opendatadiscovery/odd-collector). This dedicated agent relies exclusively on `information_schema`
+      views to access and retrieve vital information about unity catalogs and data lakes, including their associated schemas
+      and metadata. By doing so, the ODD Collector ensures a non-intrusive approach that prevents any performance
       impact on the database.
 
-      > It is essential to understand that since the ODD Collector does not execute additional analytical queries against the actual data, 
+      > It is essential to understand that since the ODD Collector does not execute additional analytical queries against the actual data,
       some metrics may not reflect precise values.
   - title: Configure
     content: |+
       ## Databricks
       It recommended to follow official instructions on how to setup Unity Catalog on [AWS](https://docs.databricks.com/data-governance/unity-catalog/get-started.html) and on [Azure](https://learn.microsoft.com/en-us/azure/databricks/data-governance/unity-catalog/get-started)
-      Make sure you have Administration account rights of Databricks, and have Premium plan for working with Unity Catalog. 
+      Make sure you have Administration account rights of Databricks, and have Premium plan for working with Unity Catalog.
 
       ## ODD Platform
       To integrate ODD Collector with the ODD Platform, users must first establish a collector entity within the platform by following these steps:
@@ -52,7 +52,7 @@ blocks:
           name: databricks_adapter
           # Databricks workspace url
           workspace: ""
-          # Databricks personal access token
+          # Databricks personal access token. Do not use relative path. Example of url https://dbc-0000c00c-0000.cloud.databricks.com
           token: ""
       ````
     snippets:
@@ -75,7 +75,7 @@ blocks:
             name: Data source name
             type: STRING
           - parameter: plugin_workspace
-            name: Data source workspace url. Do not use relative path. Example of url https://dbc-0000c00c-0000.cloud.databricks.com
+            name: Data source workspace url.
             type: STRING
           - parameter: plugin_access_token
             name: Data source personal access token
