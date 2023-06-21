@@ -1,0 +1,99 @@
+id: singlestore
+name: SingleStore
+description: |
+  SingleStore integration
+blocks:
+  - title: Overview
+    content: |+
+      The SingleStore integration significantly enhances data discovery and observability capabilities for SingleStore databases,
+      providing an efficient and powerful solution for users seeking to optimize their data management experience.
+      ## Utilizing ODD Collector with SingleStore
+      To fully harness the potential of OpenDataDiscovery in conjunction with SingleStore,
+      users should utilize the [ODD Collector](https://github.com/opendatadiscovery/odd-collector). This dedicated agent relies exclusively on `information_schema`
+      views to access and retrieve vital information about tables and views, including their associated schemas
+      and metadata. By doing so, the ODD Collector ensures a non-intrusive approach that prevents any performance
+      impact on the database.
+  - title: Configure
+    content: |+
+      ## ODD Platform
+      To integrate ODD Collector with the ODD Platform, users must first establish a collector entity within the platform by following these steps:
+
+      1. Navigate to the "Management" section and select "Collectors".
+      2. Click on the "Add Collector" button to initiate the process.
+      3. Input a unique name for the collector and, optionally, provide a namespace to further categorize and organize the entity. Additionally, you may include a brief description to give more context and information about the collector.
+      4. Click "Save" to finalize the setup, and take note of the generated token. This token will be required for incorporating it into the ODD Collector's configuration YAML file, ensuring secure communication between the two components.
+
+      ## ODD Collector
+      The process of configuring the ODD Collector involves creating and customizing a single, well-structured YAML configuration file
+
+      ````yaml
+      # ODD Platform's host URL
+      platform_host_url: https://your.odd.platform
+
+      # Default pulling interval in minutes
+      default_pulling_interval: 10
+
+      # Collector's specific security token
+      token: ""
+
+      plugins:
+        - type: singlestore
+          # Data source's name
+          name: singlestore_adapter
+          # Optional Data source's description
+          description: "SingleStore sample database"
+          # SingleStore host
+          host: host
+          # SingleStore port
+          port: port
+          # SingleStore database name
+          database: database
+          # SingleStore user
+          user: user
+          # SingleStore user password
+          password: password
+          # SSL mode
+          ssl_disabled: False
+      ````
+    snippets:
+      - template: |+
+          ````yaml
+          platform_host_url: {{ platform_url }}
+          default_pulling_interval: 10
+          token: <Security token>
+          plugins:
+            - type: singlestore
+              name: {{ ds_name }}
+              description: {{ plugin_description }}
+              host: {{ plugin_host }}
+              port: {{ plugin_port }}
+              database: {{ plugin_database }}
+              user: {{ plugin_user }}
+              password: <Password for {{ plugin_user }}>
+              ssl_disabled: {{ ssl_disabled }}
+          ````
+        arguments:
+          - parameter: platform_url
+            type: STRING
+            static: true
+          - parameter: ds_name
+            name: Data source name
+            type: STRING
+          - parameter: plugin_description
+            name: Data source description
+            type: STRING
+          - parameter: plugin_host
+            name: Host
+            type: STRING
+          - parameter: plugin_port
+            name: Port
+            type: INTEGER
+          - parameter: plugin_database
+            name: Database name
+            type: STRING
+          - parameter: plugin_user
+            name: User
+            type: STRING
+          - parameter: ssl_disabled
+            name: SSL disabled
+            type: BOOLEAN
