@@ -49,7 +49,7 @@ blocks:
           # Elasticsearch host
           host: host
           # Elasticsearch port
-          port: 5432
+          port: port
           # Elasticsearch http authitentication
           http_auth: ""     # Optional string, default None
           # Is SSL enabled
@@ -90,15 +90,15 @@ blocks:
           - parameter: plugin_port
             name: Port
             type: INTEGER
-          - parameter: http_auth
+          - parameter: es_http_auth
             name: HTTP authitentication
             type: STRING
-          - parameter: use_ssl
+          - parameter: es_use_ssl
             name: Is SSL enabled
             type: BOOLEAN
-          - parameter: verify_certs
+          - parameter: es_verify_certs_enabled
             name: Is verification certs is enabled
             type: BOOLEAN
-          - parameter: ca_certs
+          - parameter: es_path_to_ca_certs
             name: Path to CA certs
             type: STRING
