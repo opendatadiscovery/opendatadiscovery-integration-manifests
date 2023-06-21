@@ -106,19 +106,19 @@ blocks:
             name: Data source description
             type: STRING
           - parameter: count_statistics
-            name: Flag to count statistics
+            name: Count statistics
             type: BOOLEAN
           - parameter: hive_scheme
-            name: Hive scheme
+            name: Scheme
             type: STRING
           - parameter: hive_host
-            name: Hive host
+            name: Host
             type: STRING
           - parameter: hive_port
-            name: Hive port
+            name: Port
             type: INTEGER
           - parameter: hive_database
-            name: Hive database
+            name: Database name
             type: STRING
           - parameter: hive_auth
             name: Hive auth
@@ -127,8 +127,5 @@ blocks:
             name: Kerberos service name
             type: STRING
           - parameter: hive_username
-            name: Hive username
-            type: STRING
-          - parameter: hive_password
-            name: Hive password
+            name: Username
             type: STRING

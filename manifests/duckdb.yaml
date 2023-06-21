@@ -16,14 +16,14 @@ blocks:
 
 
       > DuckDB integration cannot utilize an in-memory database because it lacks
-      the ability to connect and share data seamlessly across multiple processes or sessions. 
-      > DuckDB database files cannot be accessed in parallel, 
+      the ability to connect and share data seamlessly across multiple processes or sessions.
+      > DuckDB database files cannot be accessed in parallel,
       hence when other process access the database file, ODD collector might return an error message about the file being locked until it is available to access.
 
   - title: Configure
     content: |+
       ## DuckDB
-      Create database: to create table with CLI use command `duckdb` to create in-memory database 
+      Create database: to create table with CLI use command `duckdb` to create in-memory database
       or `duckdb /path/to/your/database.db` to create persistent database.
 
       ````sql
@@ -36,7 +36,7 @@ blocks:
       INSERT INTO users (name, email) VALUES ('John Doe', 'john@example.com');
       ````
       Use .quit to quit DuckDB shell.
-      
+
       ## ODD Platform
       To integrate ODD Collector with the ODD Platform, users must first establish a collector entity within the platform by following these steps:
 
@@ -66,7 +66,7 @@ blocks:
           paths: [ /path/to/local/file.db, /path/to/local/dir ]
           # Optional name of host, by default it's set to localhost
           host: host
-    
+
       ````
     snippets:
       - template: |+
@@ -77,7 +77,7 @@ blocks:
           plugins:
             - type: duckdb
               name: {{ ds_name }}
-              paths: {{ ds_paths }}
+              paths: [] # List of paths to the db files or to the folders containing db files
               host: {{ ds_host }}
           ````
         arguments:
@@ -87,9 +87,6 @@ blocks:
           - parameter: ds_name
             name: Data source name
             type: STRING
-          - parameter: ds_paths
-            name: Data source paths
-            type: LIST[STRING]
           - parameter: ds_host
             name: Data source host
             type: STRING

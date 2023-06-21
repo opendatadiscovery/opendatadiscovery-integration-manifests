@@ -70,7 +70,7 @@ blocks:
               database: {{ plugin_database }}
               user: {{ plugin_user }}
               password: <Password for {{ plugin_user }}>
-              contact_points: {{ plugin_contact_points }}
+              contact_points: []
           ````
         arguments:
           - parameter: platform_url
@@ -87,13 +87,10 @@ blocks:
             type: STRING
           - parameter: plugin_port
             name: Port
-            type: STRING
+            type: INTEGER
           - parameter: plugin_database
             name: Database
             type: STRING
           - parameter: plugin_user
             name: User
-            type: STRING
-          - parameter: plugin_contact_points
-            name: Contact points
             type: STRING

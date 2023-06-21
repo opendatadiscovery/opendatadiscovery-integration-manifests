@@ -64,7 +64,7 @@ blocks:
           default_pulling_interval: 10
           token: <Security token>
           plugins:
-            - type: mysql
+            - type: tarantool
               name: {{ ds_name }}
               description: {{ plugin_description }}
               host: {{ plugin_host }}

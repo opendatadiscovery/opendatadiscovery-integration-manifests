@@ -45,7 +45,7 @@ blocks:
       CREATE OR REPLACE USER ODD_USER PASSWORD = 'password' DEFAULT_WAREHOUSE = ODD_WH DEFAULT_ROLE = ODD_ROLE;
       GRANT ROLE ODD_ROLE TO USER ODD_USER;
       ````
-      
+
       Now the ODD_USER will have access to the snowflake.account_usage.object_dependencies view, through the ODD_ROLE role.
       You can provide the user's credentials to the ODD Collector agent for it to retrieve the necessary metadata.
 
@@ -105,7 +105,7 @@ blocks:
               host: {{ plugin_host }}
               port: {{ plugin_port }}
               user: {{ plugin_user }}
-              password: {{ plugin_password }}
+              password: <Password for {{ plugin_user }}>
               account: {{ plugin_account }}
               database: {{ plugin_database }}
               warehouse: {{ plugin_warehouse }}
@@ -128,9 +128,6 @@ blocks:
             type: INTEGER
           - parameter: plugin_user
             name: User
-            type: STRING
-          - parameter: plugin_password
-            name: Password
             type: STRING
           - parameter: plugin_database
             name: Database name

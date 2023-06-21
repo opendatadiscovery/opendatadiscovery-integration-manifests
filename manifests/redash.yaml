@@ -60,7 +60,7 @@ blocks:
               name: {{ ds_name }}
               description: {{ plugin_description }}
               server: {{ plugin_server }}
-              api_key: {{ plugin_api_key }}
+              api_key: <API key>
           ````
         arguments:
           - parameter: platform_url
@@ -74,7 +74,4 @@ blocks:
             type: STRING
           - parameter: plugin_server
             name: Server
-            type: STRING
-          - parameter: plugin_api_key
-            name: User
             type: STRING

@@ -78,8 +78,8 @@ blocks:
             name: Data source description
             type: STRING
           - parameter: plugin_server
-            name: Superset server
+            name: Server
             type: STRING
           - parameter: plugin_username
-            name: Superset username
+            name: Username
             type: STRING

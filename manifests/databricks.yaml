@@ -65,7 +65,7 @@ blocks:
             - type: databricks
               name: {{ ds_name }}
               workspace: {{ plugin_workspace }}
-              token: {{ plugin_access_token  }}
+              token: <Personal access token>
           ````
         arguments:
           - parameter: platform_url
@@ -75,8 +75,5 @@ blocks:
             name: Data source name
             type: STRING
           - parameter: plugin_workspace
-            name: Data source workspace url.
-            type: STRING
-          - parameter: plugin_access_token
-            name: Data source personal access token
+            name: Workspace url
             type: STRING

@@ -106,7 +106,4 @@ blocks:
           - parameter: plugin_user
             name: User
             type: STRING
-          - parameter: plugin_password
-            name: Password
-            type: STRING
 
