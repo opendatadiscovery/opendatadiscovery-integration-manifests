@@ -1,14 +1,14 @@
-id: clickhouse
-name: ClickHouse
+id: elasticsearch
+name: Elasticsearch
 description: |
-  ClickHouse integration
+  Elasticsearch integration
 blocks:
   - title: Overview
     content: |+
-      The ClickHouse integration significantly improves data exploration and monitoring capabilities for ClickHouse databases, delivering an effective and powerful solution for users aiming to enhance their data management experience.
-      ## Utilizing ODD Collector with ClickHouse
-      To fully exploit the potential of OpenDataDiscovery in combination with ClickHouse,
-      users should make use of the ODD Collector. This specialized agent relies solely on system database tables
+      The Elasticsearch integration significantly improves data exploration and monitoring capabilities for Elasticsearch databases, delivering an effective and powerful solution for users aiming to enhance their data management experience.
+      ## Utilizing ODD Collector with Elasticsearch
+      To fully exploit the potential of OpenDataDiscovery in combination with Elasticsearch,
+      users should make use of the ODD Collector. This specialized agent relies solely on system database indexes, streams
       to access and obtain crucial information about tables and views, including their related schemas and metadata.
       In doing so, the ODD Collector guarantees a non-disruptive approach that avoids any performance impact on the database.
 
@@ -16,13 +16,8 @@ blocks:
       some metrics may not reflect precise values.
   - title: Configure
     content: |+
-      ## ClickHouse
-      It is recommended to create a separate ClickHouse user with access policy to the `system` tables only:
-      ````sql
-      CREATE USER <username>;
-      GRANT SELECT ON system.* TO <username>;
-      ALTER USER <username> IDENTIFIED WITH plaintext_password BY '<password>';
-      ````
+      ## Elasticsearch
+      It is recommended to create a separate Elasticsearch user with access policy to the `system` tables only:
 
       ## ODD Platform
       To integrate ODD Collector with the ODD Platform, users must first establish a collector entity within the platform by following these steps:
@@ -46,50 +41,48 @@ blocks:
       token: ""
 
       plugins:
-        - type: clickhouse
+        - type: elasticsearch
           # Data source's name
-          name: clickhouse_adapter
+          name: elasticsearch_adapter
           # Optional Data source's description
-          description: "clickhouse sample database"
-          # ClickHouse database name
-          database: database
-          # ClickHouse host
+          description: "elasticsearch sample"
+          # Elasticsearch host
           host: host
-          # ClickHouse port
-          port: 5432
-          # ClickHouse user
-          user: user
-          # MySQL user password
-          password: password
+          # Elasticsearch port
+          port: port
+          # Elasticsearch http authitentication
+          http_auth: ""     # Optional string, default None
+          # Is SSL enabled
+          use_ssl: ""       # Optional boolean, default None
+          # Is verification enabled
+          verify_certs: ""  # Optional boolean, default None
+          # Path to CA certs
+          ca_certs: ""      # Optional string, default None
+
       ````
     snippets:
       - template: |+
           ````yaml
-          platform_host_url: {{ platform_url }}
-          default_pulling_interval: 10
+          platform_host_url: <ODD Platform URL>
+          default_pulling_interval: <Pulling interval>
           token: <Security token>
           plugins:
-            - type: clickhouse
+            - type: elasticsearch
               name: {{ ds_name }}
               description: {{ plugin_description }}
-              database: {{ plugin_database }}
               host: {{ plugin_host }}
               port: {{ plugin_port }}
-              user: {{ plugin_user }}
-              password: <Password for {{ plugin_user }}>
+              http_auth: {{ es_http_auth }}
+              use_ssl: {{ es_use_ssl }}
+              verify_certs: {{ es_verify_certs_enabled }}
+              ca_certs: {{ es_path_to_ca_certs }}
           ````
         arguments:
-          - parameter: platform_url
-            type: STRING
-            static: true
           - parameter: ds_name
             name: Data source name
             type: STRING
           - parameter: plugin_description
             name: Data source description
-            type: STRING
-          - parameter: plugin_database
-            name: Database name
             type: STRING
           - parameter: plugin_host
             name: Host
@@ -97,6 +90,15 @@ blocks:
           - parameter: plugin_port
             name: Port
             type: INTEGER
-          - parameter: plugin_user
-            name: User
+          - parameter: es_http_auth
+            name: HTTP authitentication
+            type: STRING
+          - parameter: es_use_ssl
+            name: Is SSL enabled
+            type: BOOLEAN
+          - parameter: es_verify_certs_enabled
+            name: Is verification certs is enabled
+            type: BOOLEAN
+          - parameter: es_path_to_ca_certs
+            name: Path to CA certs
             type: STRING
