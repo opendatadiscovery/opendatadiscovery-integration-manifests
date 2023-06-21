@@ -1,21 +1,18 @@
-id: mongo
-name: Mongo
+id: mongodb
+name: MongoDB
 description: |
-  Mongo integration
+  MongoDB integration
 blocks:
   - title: Overview
     content: |+
       The integration with MongoDB substantially boosts the potential for data exploration and monitoring, providing a sleek and resilient tool for those seeking to uplift their data handling processes.
       ## Utilizing ODD Collector with Mongo
-      To take full advantage of OpenDataDiscovery in conjunction with MongoDB, users should utilize the ODD Collector. 
-      This specialized agent extracts metadata directly from MongoDB using its API, functioning as a central repository to store structural and operational metadata for all your data assets. 
-      The ODD Collector employs a non-invasive method, ensuring there's no performance impact on your data infrastructure. MongoDB, a highly flexible and scalable document database, provides an API for this direct interaction. 
+      To take full advantage of OpenDataDiscovery in conjunction with MongoDB, users should utilize the ODD Collector.
+      This specialized agent extracts metadata directly from MongoDB using its API, functioning as a central repository to store structural and operational metadata for all your data assets.
+      The ODD Collector employs a non-invasive method, ensuring there's no performance impact on your data infrastructure. MongoDB, a highly flexible and scalable document database, provides an API for this direct interaction.
       This way, the ODD Collector can access and consolidate metadata from MongoDB's various data stores, and it remains compatible with popular data discovery applications.
   - title: Configure
     content: |+
-      ## AWS Glue
-      It is recommended to create a separate IAM user with the least privilege policy
-
       ## ODD Platform
       To integrate ODD Collector with the ODD Platform, users must first establish a collector entity within the platform by following these steps:
 
@@ -40,24 +37,23 @@ blocks:
       # Collector's specific security token
       token: ""
 
-      - type: redshift
+      - type: mongodb
         # Data source's name
-        name: redshift_adapter
+        name: mongodb_adapter
         # Optional Data source's description
-        description: "Redshift sample database"
-        # Redshift database to scrape
-        database: "redhift_database"
-        # Redshift host
-        host: redshift-cluster.hostpart.awsregion.redshift.amazonaws.com
-        # Redshift port
-        port: 0000
-        # Redshift credentials
+        description: "MongoDB sample database"
+        # MongoDB host
+        host: host
+        # MongoDB port
+        port: 27017
+        # MongoDB database
+        database: database
+        # MongoDB user
         user: username
+        # MongoDB user password
         password: password
-        # Schemas to scrape. When ommited parse all schemas within databas (except system schemas)
-        schemas: ['schema1', 'schema2']
-        # Redshift Connection timeout
-        connection_timeout: 10 
+        # MongoDB protocol
+        protocol: mongodb
       ````
     snippets:
       - template: |+
@@ -66,16 +62,15 @@ blocks:
           default_pulling_interval: 10
           token: <Security token>
           plugins:
-            - type: redshift
+            - type: mongodb
               name: {{ ds_name }}
               description: {{ plugin_description }}
-              host: {{ redshift_host }}
-              database: {{ redshift_database }}
-              port: {{ redshift_port }}
-              user: {{ redshift_user }}
-              password:  <Password for {{ redshift_user }}>
-              schemas: ['schema'] # Optional List[str], when ommitted parse all schemas (except system schemas)
-              connection_timeout: 10
+              host: {{ mongodb_host }}
+              port: {{ mongodb_port }}
+              database: {{ mongodb_database }}
+              user: {{ mongodb_user }}
+              password:  <Password for {{ mongodb_user }}>
+              protocol: {{ mongodb_protocol }}
           ````
         arguments:
           - parameter: platform_url
@@ -87,15 +82,18 @@ blocks:
           - parameter: plugin_description
             name: Data source description
             type: STRING
-          - parameter: redshift_host
-            name: Redshift host
+          - parameter: mongodb_host
+            name: MongoDB host
             type: STRING
-          - parameter: redshift_database
-            name: Redshift database
-            type: STRING
-          - parameter: redshift_port
-            name: Redshift port
+          - parameter: mongodb_port
+            name: MongoDB port
             type: INTEGER
-          - parameter: redshift_username
-            name: Redshift username
+          - parameter: mongodb_database
+            name: MongoDB database
+            type: STRING
+          - parameter: mongodb_user
+            name: MongoDB user
+            type: STRING
+          - parameter: mongodb_protocol
+            name: MongoDB protocol
             type: STRING

@@ -7,8 +7,8 @@ blocks:
     content: |+
       The Amazon Redshift integration significantly amplifies data discovery and observability capabilities for Amazon Redshift data warehouses, offering a streamlined and robust solution for users aiming to advance their data management experience.
       ## Utilizing ODD Collector with Redshift
-      To fully leverage the potential of OpenDataDiscovery in conjunction with Amazon Redshift, users should employ the ODD Collector. 
-      This dedicated agent relies exclusively on Amazon Redshift's system catalog views to access and retrieve vital information about tables and views, including their corresponding schemas and metadata. 
+      To fully leverage the potential of OpenDataDiscovery in conjunction with Amazon Redshift, users should employ the ODD Collector.
+      This dedicated agent relies exclusively on Amazon Redshift's system catalog views to access and retrieve vital information about tables and views, including their corresponding schemas and metadata.
       In doing so, the ODD Collector ensures a non-intrusive method that avoids any performance impact on the data warehouse.
       > It is essential to understand that since the ODD Collector does not execute additional analytical queries against the actual data,
       some metrics may not reflect precise values.
@@ -62,10 +62,10 @@ blocks:
         # Redshift credentials
         user: username
         password: password
-        # Schemas to scrape. When ommited parse all schemas within databas (except system schemas)
+        # Schemas to scrape. When ommited parse all schemas within database (except system schemas)
         schemas: ['schema1', 'schema2']
         # Redshift Connection timeout
-        connection_timeout: 10 
+        connection_timeout: 10
       ````
     snippets:
       - template: |+
