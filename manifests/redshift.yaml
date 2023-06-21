@@ -1,0 +1,109 @@
+id: redshift
+name: Redshift
+description: |
+  Redshift integration
+blocks:
+  - title: Overview
+    content: |+
+      The Amazon Redshift integration significantly amplifies data discovery and observability capabilities for Amazon Redshift data warehouses, offering a streamlined and robust solution for users aiming to advance their data management experience.
+      ## Utilizing ODD Collector with Redshift
+      To fully leverage the potential of OpenDataDiscovery in conjunction with Amazon Redshift, users should employ the ODD Collector.
+      This dedicated agent relies exclusively on Amazon Redshift's system catalog views to access and retrieve vital information about tables and views, including their corresponding schemas and metadata.
+      In doing so, the ODD Collector ensures a non-intrusive method that avoids any performance impact on the data warehouse.
+      > It is essential to understand that since the ODD Collector does not execute additional analytical queries against the actual data,
+      some metrics may not reflect precise values.
+      > For count statistics against data take a look at [ODD Collector Profiler](https://github.com/opendatadiscovery/odd-collector-profiler) project.
+  - title: Configure
+    content: |+
+      ## Amazon Redshift
+      It is recommended to create a separate Amazon Redshift user with the least privilege policy, specifically access to the relevant schemas only:
+
+      ```sql
+      CREATE USER user_name WITH PASSWORD = 'yourStrong(!)Password';
+      GRANT USAGE ON SCHEMA some_schema_name TO user_name;
+      GRANT SELECT ON ALL TABLES IN SCHEMA some_schema_name TO user_name;
+      ```
+
+      ## ODD Platform
+      To integrate ODD Collector with the ODD Platform, users must first establish a collector entity within the platform by following these steps:
+
+      1. Navigate to the "Management" section and select "Collectors".
+      2. Click on the "Add Collector" button to initiate the process.
+      3. Input a unique name for the collector and, optionally, provide a namespace to further categorize and organize the entity. Additionally, you may include a brief description to give more context and information about the collector.
+      4. Click "Save" to finalize the setup, and take note of the generated token. This token will be required for incorporating it into the ODD Collector's configuration YAML file, ensuring secure communication between the two components.
+
+      ## ODD Collector
+      The process of configuring the ODD Collector involves creating and customizing a single, well-structured YAML configuration file
+
+      ````yaml
+      # ODD Platform's host URL
+      platform_host_url: https://your.odd.platform
+
+      # Default pulling interval in minutes, can be omit to run collector once
+      default_pulling_interval: 10
+
+      # Chunk size for ingestion, can be omit to use default value
+      chunk_size: 1000
+
+      # Collector's specific security token
+      token: ""
+
+      - type: redshift
+        # Data source's name
+        name: redshift_adapter
+        # Optional Data source's description
+        description: "Redshift sample database"
+        # Redshift database to scrape
+        database: "redhift_database"
+        # Redshift host
+        host: redshift-cluster.hostpart.awsregion.redshift.amazonaws.com
+        # Redshift port
+        port: 0000
+        # Redshift credentials
+        user: username
+        password: password
+        # Schemas to scrape. When ommited parse all schemas within database (except system schemas)
+        schemas: ['schema1', 'schema2']
+        # Redshift Connection timeout
+        connection_timeout: 10
+      ````
+    snippets:
+      - template: |+
+          ````yaml
+          platform_host_url: {{ platform_url }}
+          default_pulling_interval: 10
+          token: <Security token>
+          plugins:
+            - type: redshift
+              name: {{ ds_name }}
+              description: {{ plugin_description }}
+              host: {{ redshift_host }}
+              database: {{ redshift_database }}
+              port: {{ redshift_port }}
+              user: {{ redshift_user }}
+              password:  <Password for {{ redshift_user }}>
+              schemas: ['schema'] # Optional List[str], when ommitted parse all schemas (except system schemas)
+              connection_timeout: 10
+          ````
+        arguments:
+          - parameter: platform_url
+            type: STRING
+            static: true
+          - parameter: ds_name
+            name: Data source name
+            type: STRING
+          - parameter: plugin_description
+            name: Data source description
+            type: STRING
+          - parameter: redshift_host
+            name: Redshift host
+            type: STRING
+          - parameter: redshift_database
+            name: Redshift database
+            type: STRING
+          - parameter: redshift_port
+            name: Redshift port
+            type: INTEGER
+          - parameter: redshift_username
+            name: Redshift username
+            type: STRING
