@@ -1,17 +1,17 @@
-id: tableau
-name: Tableau
+id: superset
+name: Superset
 description: |
-  Tableau integration
+  Superset integration
 blocks:
   - title: Overview
     content: |+
-      The Tableau integration significantly enhances data discovery and observability capabilities for Tableau,
+      The Superset integration significantly enhances data discovery and observability capabilities for Superset data exploration and visualization platform,
       providing an efficient and powerful solution for users seeking to optimize their data management experience.
 
-      ## Utilizing ODD Collector with Tableau
-      To fully harness the potential of OpenDataDiscovery in conjunction with Tableau,
+      ## Utilizing ODD Collector with Superset
+      To fully harness the potential of OpenDataDiscovery in conjunction with Superset,
       users should utilize the [ODD Collector](https://github.com/opendatadiscovery/odd-collector).
-      This dedicated agent relies on Tableau's GraphQL API to access and retrieve vital information about Sheets, Databases and Columns, including their associated metadata.
+      This dedicated agent relies on Superset's REST API to access and retrieve vital information about Dashboards, Charts and Datasets, including their associated metadata.
       By doing so, the ODD Collector ensures a non-intrusive approach that prevents any performance
       impact on the service.
 
@@ -41,25 +41,17 @@ blocks:
       token: ""
 
       plugins:
-        - type: tableau
+        - type: superset
           # Data source's name
-          name: tableau_adapter
+          name: superset_adapter
           # Optional Data source's description
-          description: "tableau sample"
-          # Tableau server
+          description: "Superset sample"
+          # Superset server
           server: server
-          # Tableau site
-          site: site
-          # Optional Tableau user
-          user: user
-          # Optional Tableau user password
+          # Superset username
+          username: username
+          # Superset user password
           password: password
-          # Optional Tableau token name, used for connection to TableauServer with 2FA
-          token_name: token_name
-          # Tableau token value, used for connection to TableauServer with 2FA
-          token_value: token_value
-          # Tableau pagination size. This parameter may affect performance of the query as the query gets larger
-          pagination_size: 10
       ````
     snippets:
       - template: |+
@@ -68,16 +60,12 @@ blocks:
           default_pulling_interval: 10
           token: <Security token>
           plugins:
-            - type: tableau
+            - type: superset
               name: {{ ds_name }}
               description: {{ plugin_description }}
               server: {{ plugin_server }}
-              site: {{ plugin_site }}
-              user: {{ plugin_user }}
-              password: <Password for {{ plugin_user }}>
-              token_name: {{ plugin_token_name }}
-              token_value: <Token value for {{ plugin_token_name }}>
-              pagination_size: {{ plugin_pagination_size }}
+              username: {{ plugin_username }}
+              password: <Password for {{ plugin_username }}>
           ````
         arguments:
           - parameter: platform_url
@@ -90,17 +78,8 @@ blocks:
             name: Data source description
             type: STRING
           - parameter: plugin_server
-            name: Tableau server
+            name: Superset server
             type: STRING
-          - parameter: plugin_site
-            name: Tableau site
+          - parameter: plugin_username
+            name: Superset username
             type: STRING
-          - parameter: plugin_user
-            name: Tableau user
-            type: STRING
-          - parameter: plugin_token_name
-            name: Tableau token name
-            type: STRING
-          - parameter: plugin_pagination_size
-            name: Tableau pagination size
-            type: INTEGER
