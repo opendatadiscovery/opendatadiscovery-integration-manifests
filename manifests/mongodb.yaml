@@ -1,4 +1,4 @@
-id: mongodb
+id: mongo
 name: MongoDB
 description: |
   MongoDB integration

@@ -1,0 +1,62 @@
+id: spark
+name: Spark
+description: Spark integration with ODD Spark Adapter
+blocks:
+  - title: Overview
+    content: |+
+      ## ODD Spark Adapter
+      The Spark integration with the OpenDataDiscovery (ODD) Spark Adapter allows the capture of metadata and dependencies from Spark jobs (version 3.3.1) for ODD based platforms.
+
+      The ODD Spark Adapter acts as a Spark Listener, enabling efficient metadata extraction and transfer from Spark jobs to the ODD platform, thus enhancing data management and monitoring.
+
+      ## Supported functionality
+      As of now, ODD Spark adapter v0.0.1 supports:
+      1. RDD low level jobs
+      2. Read/write from/to JDBC data sources
+      3. Read/write from/to Kafka topics (batch only)
+      4. Read/write from/to Snowflake tables
+      5. Read/write from/to S3 Delta tables
+  - title: Limitations
+    content: |+
+      Before utilizing the ODD Spark Adapter, it's crucial to be aware of the following limitations:
+
+      1. The current version of the ODD Spark Adapter does not support Spark structured streaming
+      2. The ODD Spark Adapter supports only Spark version 3.3.1
+  - title: Confugure
+    content: |+
+      The ODD Spark Adapter is a simple Spark Listener designed to gather metadata and the inputs/outputs of Spark jobs to send them to the ODD Platform or any ODD based backend.
+
+      ## ODD Platform
+      To integrate ODD Spark Adapter with the ODD Platform, users must first establish a data source entity within the platform by following these steps:
+
+      1. Navigate to the "Management" section and select "Datasources".
+      2. Click on the "Add Datasource" button to initiate the process.
+      3. Input a unique name and a unique ODDRN for the data source. ODDRN can be any string that starts with the `//spark/host`, e.g. `//spark/host/unique_spark_cluster_key`
+      4. Optionally, provide a namespace to further categorize and organize the entity. Additionally, you may include a brief description to give more context and information about the data source.
+      5. Click "Save" to finalize the setup
+
+      ### Download the Listener JAR
+
+      The available JAR files for the ODD Spark Adapter can be found on the Releases page.
+
+      ### Configuration
+
+      To set up the ODD Spark Adapter, you'll need to configure the following properties:
+
+      1. `spark.odd.host.url` — This should be the URL of your ODD Platform deployment.
+      2. `spark.odd.oddrn.key` — This is a unique identifier for your Spark cluster. It can be any string that uniquely defines the target Spark cluster within the scope of your data infrastructure. It will be translated to the data source ODDRN: `//spark/host/{spark.odd.oddrn.key}`
+
+      ### Example of running a Spark job with the ODD Spark Adapter
+
+      Here's an example of how to run a Spark job using the ODD Spark Adapter:
+
+      ```bash
+      ./spark-submit \
+          --packages <needed packages for the Spark jobs> \
+          --jars <path to the ODD Spark adapter JAR> \
+          --conf "spark.odd.host.url=http://odd-platform:8080" \
+          --conf "spark.odd.oddrn.key=unique_spark_cluster_key" \
+          /jobs/simple-delta-lake.py
+      ```
+
+      More examples can be found [here](https://github.com/opendatadiscovery/odd-spark-adapter/tree/main/docker)

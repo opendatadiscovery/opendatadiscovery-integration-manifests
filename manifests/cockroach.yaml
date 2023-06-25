@@ -1,4 +1,4 @@
-id: CockroachDB
+id: cockroachdb
 name: CockroachDB
 description: |
   CockroachDB integration

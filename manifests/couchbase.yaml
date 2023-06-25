@@ -1,4 +1,4 @@
-id: Couchbase
+id: couchbase
 name: Couchbase
 description: |
   Couchbase integration
@@ -92,7 +92,7 @@ blocks:
             type: STRING
           - parameter: plugin_sample_size
             name: Sample size
-            type: NUMBER
+            type: INTEGER
           - parameter: plugin_num_sample_values
             name: Number of sample values
-            type: NUMBER
+            type: INTEGER
