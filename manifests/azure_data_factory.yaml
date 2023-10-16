@@ -1,0 +1,108 @@
+id: azure_data_factory
+name: Azure Data Factory
+description: |
+  Azure Data Factory (ADF) integration.
+blocks:
+  - title: Overview
+    content: |+
+      The Azure Data Factory (ADF) integration significantly enhances data discovery and observability capabilities for ADF factories,
+      providing an efficient and powerful solution for users seeking to optimize their data management experience.
+      ## Utilizing ODD Collector with ADF
+      To fully harness the potential of OpenDataDiscovery in conjunction with ADF,
+      users should utilize the [ODD Collector](https://github.com/opendatadiscovery/odd-collector). This dedicated agent relies exclusively on Azure API
+      to access and retrieve vital info regarding factories, pipelines, activities and runs. 
+      By doing so, the ODD Collector ensures a non-intrusive approach that prevents any performance impact on the factory.
+      > Note: Ensure that you have appropriate permissions in Azure to access and manage Data Factory resources for a hassle-free integration.
+
+  - title: Configure
+    content: |+
+      ## Azure Data Factory
+      To start with Azure Data Factory, you need to have an active Azure subscription. Within the Azure portal:
+      
+      1. Navigate to "Create a resource".
+      2. Search and select "Data Factory".
+      3. Fill out the necessary fields and configurations.
+      4. Click "Review + create" and then "Create".
+
+      Once your Data Factory instance is up, you can create pipelines, datasets, and other necessary resources.
+
+      ## ODD Platform
+      Integrating ODD Collector with the ODD Platform for Azure Data Factory involves:
+
+      1. Navigate to the "Management" section and select "Collectors".
+      2. Click on the "Add Collector" button.
+      3. Name the collector, provide an optional namespace and description.
+      4. Click "Save" to finalize the setup, and remember the generated token. This token will be required to incorporate it into the ODD Collector's configuration YAML file, ensuring secure communication between the two components.
+
+      ## ODD Collector
+      The process of configuring the ODD Collector involves creating and customizing a single, well-structured YAML configuration file and setting required environmental variables
+      
+      ````yaml
+      # ODD Platform's host URL
+      platform_host_url: https://your.odd.platform
+
+      # Default pulling interval in minutes
+      default_pulling_interval: 10
+
+      # Collector's specific security token
+      token: ""
+
+      plugins:
+        - type: azure_data_factory
+          # Data source's name
+          name: azure_data_factory_plugin
+          # Azure subscription ID
+          subscription: id
+          # Azure resource group name
+          resource_group: resource-group-name
+          # Data factory name
+          factory: factory-name
+          # Optional filters for pipelines
+          pipeline_filter:
+            include: [ patterns_to_include ]
+            exclude: [ patterns_to_exclude ]
+      ````
+      Environmental variables which need to be set:  
+      - AZURE_TENANT_ID
+      - AZURE_CLIENT_ID
+      - AZURE_CLIENT_SECRET
+
+    snippets:
+      - template: |+
+          ````yaml
+          platform_host_url: {{ platform_url }}
+          default_pulling_interval: 10
+          token: <Security token>
+          plugins:
+            - type: azure_data_factory
+              name: {{ adf_name }}
+              azure_subscription_id: {{ azure_subscription_id }}
+              azure_resource_group: {{ azure_resource_group }}
+              azure_data_factory_name: {{ azure_data_factory_name }}
+              pipeline_filter: # Optional
+                include: {{ patterns_to_include }}
+                exclude: {{ patterns_to_exclude }}
+          ````
+        arguments:
+          - parameter: platform_url
+            type: STRING
+            static: true
+          - parameter: adf_name
+            name: ADF Instance Name
+            type: STRING
+          - parameter: azure_subscription_id
+            name: Azure Subscription ID
+            type: STRING
+          - parameter: azure_resource_group
+            name: Azure Resource Group
+            type: STRING
+          - parameter: azure_data_factory_name
+            name: Data Factory Name
+            type: STRING
+          - parameter: patterns_to_include
+            name: Pipeline name patterns to include
+            type: LIST[STRING]
+          - parameter: patterns_to_exclude
+            name: Pipeline name patterns to exclude
+            type: LIST[STRING]
+
