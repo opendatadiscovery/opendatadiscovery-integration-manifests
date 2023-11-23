@@ -1,0 +1,93 @@
+id: ckan
+name: CKAN
+description: |
+  CKAN integration
+blocks:
+  - title: Overview
+    content: |+
+      CKAN integration significantly enhances data discovery and observability capabilities for websites 
+      empowered with CKAN API data injection, providing an efficient and powerful solution for users 
+      seeking to optimize their data management experience.
+
+      ## Utilizing ODD Collector with CKAN API
+      To fully harness the potential of OpenDataDiscovery in conjunction with CKAN,
+      users should utilize the [ODD Collector](https://github.com/opendatadiscovery/odd-collectors).
+      Adapter relies exclusively on CKAN API to access and retrieve all data from websites empowered with CKAN.
+  - title: Configure
+    content: |+
+      ## ODD Platform
+      To integrate ODD Collector with the ODD Platform, users must first establish a collector entity 
+      within the platform by following these steps:
+
+      1. Navigate to the "Management" section and select "Collectors".
+      2. Click on the "Add Collector" button to initiate the process.
+      3. Input a unique name for the collector and, optionally, provide a namespace to further categorize 
+      and organize the entity. Additionally, you may include a brief description to give more context 
+      and information about the collector.
+      4. Click "Save" to finalize the setup, and take note of the generated token. 
+      This token will be required for incorporating it into the ODD Collector's configuration YAML file, 
+      ensuring secure communication between the two components.
+
+      ## ODD Collector
+      The process of configuring the ODD Collector involves creating and customizing a single, 
+      well-structured YAML configuration file:
+
+      ````yaml
+      # ODD Platform's host URL
+      platform_host_url: https://your.odd.platform
+
+      # Default pulling interval in minutes
+      default_pulling_interval: 10
+
+      # Collector's specific security token
+      token: ""
+
+      plugins:
+        - type: ckan
+          # Data source's name
+          name: ckan_adapter
+          # Optional Data source's description
+          description: "CKAN sample"
+          # Website empowered with CKAN API host
+          host: host
+          # Website empowered with CKAN API port
+          port: port
+          # endpoint in between host and CKAN API routes
+          ckan_endpoint: /endpoint/to/ckan_api
+          # CKAN API auth token. Optional. Some API functions may require authorization
+          token: secure_ckan_api_token
+      ````
+    snippets:
+      - template: |+
+          ````yaml
+          platform_host_url: {{ platform_url }}
+          default_pulling_interval: 10
+          token: <Security token>
+          plugins:
+            - type: ckan
+              name: {{ ds_name }}
+              description: {{ plugin_description }}
+              host: {{ plugin_host }}
+              port: {{ plugin_port }}
+              ckan_endpoint: {{ plugin_ckan_endpoint }}
+              token: <CKAN API security token>
+          ````
+        arguments:
+          - parameter: platform_url
+            type: STRING
+            static: true
+          - parameter: ds_name
+            name: Data source name
+            type: STRING
+          - parameter: plugin_description
+            name: Data source description
+            type: STRING
+          - parameter: plugin_host
+            name: Host
+            type: STRING
+          - parameter: plugin_port
+            name: Port
+            type: INTEGER
+          - parameter: plugin_ckan_endpoint
+            name: CKAN endpoint
+            type: STRING
