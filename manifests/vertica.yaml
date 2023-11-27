@@ -1,0 +1,98 @@
+id: vertica
+name: Vertica
+description: |
+  Vertica integration
+blocks:
+  - title: Overview
+    content: |+
+      The Vertica integration significantly enhances data discovery and observability capabilities for Vertica databases, 
+      providing an efficient and powerful solution for users seeking to optimize their data management experience.
+      ## Utilizing ODD Collector with Vertica
+      To fully harness the potential of OpenDataDiscovery in conjunction with Vertica, 
+      users should utilize the [ODD Collector](https://github.com/opendatadiscovery/odd-collector). This dedicated agent relies exclusively on `information_schema` 
+      views to access and retrieve vital information about tables and views, including their associated schemas 
+      and metadata. By doing so, the ODD Collector ensures a non-intrusive approach that prevents any performance 
+      impact on the database.
+
+
+      > It is essential to understand that since the ODD Collector does not execute additional analytical queries against the actual data, 
+      some metrics may not reflect precise values.
+      For instance, the `rows_count` metric might provide an estimated number of rows in a table instead of an exact figure
+  - title: Configure
+    content: |+
+      ## ODD Platform
+      To integrate ODD Collector with the ODD Platform, users must first establish a collector entity within the platform by following these steps:
+
+      1. Navigate to the "Management" section and select "Collectors".
+      2. Click on the "Add Collector" button to initiate the process.
+      3. Input a unique name for the collector and, optionally, provide a namespace to further categorize and organize the entity. Additionally, you may include a brief description to give more context and information about the collector.
+      4. Click "Save" to finalize the setup, and take note of the generated token. This token will be required for incorporating it into the ODD Collector's configuration YAML file, ensuring secure communication between the two components.
+
+      ## ODD Collector
+      The process of configuring the ODD Collector involves creating and customizing a single, well-structured YAML configuration file
+
+      ````yaml
+      # ODD Platform's host URL
+      platform_host_url: https://your.odd.platform
+
+      # Default pulling interval in minutes
+      default_pulling_interval: 10
+
+      # Collector's specific security token
+      token: ""
+
+      plugins:
+        - type: vertica
+          # Data source's name
+          name: vertica_adapter
+          # Optional Data source's description
+          description: "Vertica sample database"
+          # Vertica database name
+          database: database
+          # Vertica host
+          host: host
+          # Vertica port
+          port: 5433
+          # Vertica user
+          user: user
+          # Vertica user password
+          password: password
+      ````
+    snippets:
+      - template: |+
+          ````yaml
+          platform_host_url: {{ platform_url }}
+          default_pulling_interval: 10
+          token: <Security token>
+          plugins:
+            - type: vertica
+              name: {{ ds_name }}
+              description: {{ plugin_description }}
+              database: {{ plugin_database }}
+              host: {{ plugin_host }}
+              port: {{ plugin_port }}
+              user: {{ plugin_user }}
+              password: <Password for {{ plugin_user }}>
+          ````
+        arguments:
+          - parameter: platform_url
+            type: STRING
+            static: true
+          - parameter: ds_name
+            name: Data source name
+            type: STRING
+          - parameter: plugin_description
+            name: Data source description
+            type: STRING
+          - parameter: plugin_database
+            name: Database name
+            type: STRING
+          - parameter: plugin_host
+            name: Host
+            type: STRING
+          - parameter: plugin_port
+            name: Port
+            type: INTEGER
+          - parameter: plugin_user
+            name: User
+            type: STRING
