@@ -91,6 +91,10 @@ blocks:
           warehouse: warehouse
           # Optional account locator, if omit, will be taken from host.
           account: account
+          # Optional, if not provided all schemas from the database will be fetched
+          schemas_filter:
+            include: [ patterns_to_include ] # Schema name patterns to include
+            exclude: [ patterns_to_exclude ] # Schema name patterns to exclude
       ````
     snippets:
       - template: |+
@@ -109,6 +113,9 @@ blocks:
               account: {{ plugin_account }}
               database: {{ plugin_database }}
               warehouse: {{ plugin_warehouse }}
+              schemas_filter:
+                include: [{{ include_patterns }}]
+                exclude: [{{ exclude_patterns }}]
           ````
         arguments:
           - parameter: platform_url
@@ -137,4 +144,10 @@ blocks:
             type: STRING
           - parameter: plugin_account
             name: Account
+            type: STRING
+          - parameter: include_patterns
+            name: Include schema patterns
+            type: STRING
+          - parameter: exclude_patterns
+            name: Exclude schema patterns
             type: STRING
