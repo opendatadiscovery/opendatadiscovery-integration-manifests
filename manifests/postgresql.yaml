@@ -64,6 +64,10 @@ blocks:
           user: user
           # PostgreSQL user password
           password: password
+          # Optional, if not provided all schemas from the database will be fetched
+          schemas_filter:
+            include: [ patterns_to_include ] # Schema name patterns to include
+            exclude: [ patterns_to_exclude ] # Schema name patterns to exclude
       ````
     snippets:
       - template: |+
@@ -80,6 +84,9 @@ blocks:
               port: {{ plugin_port }}
               user: {{ plugin_user }}
               password: <Password for {{ plugin_user }}>
+              schemas_filter:
+                include: [{{ include_patterns }}]
+                exclude: [{{ exclude_patterns }}]
           ````
         arguments:
           - parameter: platform_url
@@ -102,4 +109,10 @@ blocks:
             type: INTEGER
           - parameter: plugin_user
             name: User
+            type: STRING
+          - parameter: include_patterns
+            name: Include schema patterns
+            type: STRING
+          - parameter: exclude_patterns
+            name: Exclude schema patterns
             type: STRING
