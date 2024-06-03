@@ -65,6 +65,7 @@ blocks:
           # PostgreSQL user password
           password: password
           # Optional, if not provided all schemas from the database will be fetched
+          # more on filter topic: https://blog.opendatadiscovery.org/filters-to-include-and-exclude-objects-from-ingest-9fceff77133a
           schemas_filter:
             include: [ patterns_to_include ] # Schema name patterns to include
             exclude: [ patterns_to_exclude ] # Schema name patterns to exclude
@@ -85,8 +86,8 @@ blocks:
               user: {{ plugin_user }}
               password: <Password for {{ plugin_user }}>
               schemas_filter:
-                include: [{{ include_patterns }}]
-                exclude: [{{ exclude_patterns }}]
+                include: [{% for pattern in include_patterns %}"{{ pattern }}"{% if not loop.last %}, {% endif %}{% endfor %}]
+                exclude: [{% for pattern in exclude_patterns %}"{{ pattern }}"{% if not loop.last %}, {% endif %}{% endfor %}]
           ````
         arguments:
           - parameter: platform_url
@@ -112,7 +113,7 @@ blocks:
             type: STRING
           - parameter: include_patterns
             name: Include schema patterns
-            type: STRING
+            type: LIST
           - parameter: exclude_patterns
             name: Exclude schema patterns
-            type: STRING
+            type: LIST
