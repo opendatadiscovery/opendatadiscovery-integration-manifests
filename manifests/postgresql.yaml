@@ -67,7 +67,7 @@ blocks:
           # Optional, if not provided all schemas from the database will be fetched
           # more on filter topic: https://blog.opendatadiscovery.org/filters-to-include-and-exclude-objects-from-ingest-9fceff77133a
           schemas_filter:
-            include: [ patterns_to_include ] # Schema name patterns to include
+            include: [ patterns_to_include ] # Schema name patterns to include. Example: ['test', '^in.*prod'] 
             exclude: [ patterns_to_exclude ] # Schema name patterns to exclude
       ````
     snippets:
@@ -86,8 +86,8 @@ blocks:
               user: {{ plugin_user }}
               password: <Password for {{ plugin_user }}>
               schemas_filter:
-                include: [{% for pattern in include_patterns %}"{{ pattern }}"{% if not loop.last %}, {% endif %}{% endfor %}]
-                exclude: [{% for pattern in exclude_patterns %}"{{ pattern }}"{% if not loop.last %}, {% endif %}{% endfor %}]
+                include: {{ include_patterns }}
+                exclude: {{ exclude_patterns }}
           ````
         arguments:
           - parameter: platform_url
@@ -112,8 +112,8 @@ blocks:
             name: User
             type: STRING
           - parameter: include_patterns
-            name: Include schema patterns
-            type: LIST
+            name: Schema name patterns to include
+            type: LIST[STRING]
           - parameter: exclude_patterns
-            name: Exclude schema patterns
-            type: LIST
+            name: Schema name patterns to exclude
+            type: LIST[STRING]
