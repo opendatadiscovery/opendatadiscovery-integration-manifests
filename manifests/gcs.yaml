@@ -1,0 +1,156 @@
+id: gcs
+name: Google Cloud Storage
+description: |
+  Google Cloud Storage integration
+blocks:
+  - title: Overview
+    content: |+
+      The Google Cloud Storage (GCS) integration improves data management capabilities for GCS platforms, providing a robust and efficient solution for users aiming to optimize their cloud storage management and data analytics experience.
+      ## Utilizing ODD Collector with GCS
+      To fully leverage the potential of OpenDataDiscovery in conjunction with GCS, users should use the [ODD Collector](https://github.com/opendatadiscovery/odd-collector). This dedicated agent depends on GCS's API with pyarrow filesystem to access and retrieve vital information about buckets, objects, and their associated metadata. 
+      By doing so, the ODD Collector ensures a non-intrusive approach that prevents any performance impact on the GCS platform.
+
+  - title: Configure
+    content: |+
+      ## ODD Platform
+      To integrate ODD Collector with the ODD Platform, users must first create a collector entity within the platform by following these steps:
+
+      1. Navigate to the "Management" section and select "Collectors".
+      2. Click on the "Add Collector" button to begin the process.
+      3. Enter a unique name for the collector and, optionally, provide a namespace to further categorize and organize the entity. You can also include a brief description to give more context and information about the collector.
+      4. Click "Save" to finalize the setup, and remember the generated token. This token will be required to incorporate it into the ODD Collector's configuration YAML file, ensuring secure communication between the two components.
+
+      ## ODD Collector
+      The process of configuring the ODD Collector involves creating and customizing a single, well-structured YAML configuration file
+
+      ````yaml
+      # ODD Platform's host URL
+      platform_host_url: https://your.odd.platform
+
+      # Default pulling interval in minutes
+      default_pulling_interval: 10
+
+      # Collector's specific security token
+      token: ""
+
+      plugins:
+        - type: gcs
+          name: gcs_adapter
+          project: <any_project_name>
+          filename_filter: # Optional. Default filter allows each file to be ingested to platform.
+            include: [ '.*.parquet' ]
+            exclude: [ 'dev_.*' ]
+          parameters: # Optional set of parameters, default values presented below.
+            anonymous: bool = False, # Whether to connect anonymously. If True, will not attempt to look up credentials using standard GCP configuration methods.
+            access_token: str = None, # GCP access token. If provided, temporary credentials will be fetched by assuming this role; also, a credential_token_expiration must be specified as well.
+            target_service_account: str = None, # An optional service account to try to impersonate when accessing GCS. This requires the specified credential user or service account to have the necessary permissions.
+            credential_token_expiration: datetime = None, # Datetime in format: "2023-12-31 23:59:59". Expiration for credential generated with an access token. Must be specified if access_token is specified.
+            default_bucket_location: str = "US", # GCP region to create buckets in.
+            scheme: str = "https", # GCS connection transport scheme.
+            endpoint_override: str = None, # Override endpoint with a connect string such as “localhost:9000”
+            default_metadata: mapping or pyarrow.KeyValueMetadata = None, # Default metadata for open_output_stream. This will be ignored if non-empty metadata is passed to open_output_stream.
+            retry_time_limit: timedelta = None, # Timedelta in seconds. Set the maximum amount of time the GCS client will attempt to retry transient errors. Subsecond granularity is ignored.
+          datasets:
+            # Recursive fetch for all objects in the bucket.
+            - bucket: my_bucket
+            # Explicitly specify the prefix to file.
+            - bucket: my_bucket
+              prefix: folder/subfolder/file.csv
+            # When we want to use the folder as a dataset. Very useful for partitioned datasets.
+            # I.e it can be Hive partitioned dataset with structure like this:
+            # gs://my_bucket/partitioned_data/year=2019/month=01/...
+            - bucket: my_bucket
+              prefix: partitioned_data/
+              folder_as_dataset:
+                file_format: parquet
+                flavor: hive
+      ````
+    snippets:
+      - template: |+
+          ````yaml
+          platform_host_url: {{ platform_url }}
+          default_pulling_interval: 10
+          token: <Security token>
+          plugins:
+            - type: gcs
+              name: {{ ds_name }}
+              description: {{ plugin_description }}
+              project: {{ gcp_project_name }}
+              filename_filter: 
+                include: {{ gcs_include }}
+                exclude: {{ gcs_exclude }}
+              datasets: 
+                bucket: {{ gcs_bucket }}
+                prefix: {{ gcs_prefix }}
+                folder_as_dataset:
+                  file_format: {{ gcs_file_format }}
+                  flavor: {{ gcs_flavor }}
+              parameters:
+                anonymous: {{ gcp_anonymous }}
+                access_token: {{ gcp_access_token }}
+                target_service_account: {{ gcs_target_service_account }}
+                credential_token_expiration: {{ gcp_credential_token_expiration }}
+                default_bucket_location: {{ gcp_bucket_region }}
+                scheme: {{ gcs_schema }}
+                endpoint_override: {{ gcp_endpoint_override }}
+                default_metadata: {{ gcs_default_metadata }}
+                retry_time_limit: {{ gcs_retry_time_limit }}
+          ````
+        arguments:
+          - parameter: platform_url
+            type: STRING
+            static: true
+          - parameter: ds_name
+            name: Data source name
+            type: STRING
+          - parameter: plugin_description
+            name: Data source description
+            type: STRING
+          - parameter: gcp_project_name
+            name: Google Cloud Project name
+            type: STRING
+          - parameter: gcs_include
+            name: Included prefixes
+            type: LIST[STRING]
+          - parameter: gcs_exclude
+            name: Excluded prefixes
+            type: LIST[STRING]
+          - parameter: gcs_bucket
+            name: Google Cloud Storage bucket
+            type: STRING
+          - parameter: gcs_prefix
+            name: Prefix to the file
+            type: STRING
+          - parameter: gcs_file_format
+            name: Folder as dataset file format
+            type: STRING
+          - parameter: gcs_flavor
+            name: Folder as dataset flavor
+            type: STRING
+          - parameter: gcp_anonymous
+            name: Anonymous connection
+            type: BOOL
+          - parameter: gcp_access_token
+            name: Google Cloud Platform access token
+            type: STRING
+          - parameter: gcs_target_service_account
+            name: Service account for accessing Google Cloud Storage
+            type: STRING
+          - parameter: gcp_credential_token_expiration
+            name: Access token expiration
+            type: DATETIME
+          - parameter: gcp_bucket_region
+            name: Google Cloud Platform region of the bucket
+            type: STRING
+          - parameter: gcs_schema
+            name: Google Cloud Storage connection transport scheme
+            type: STRING
+          - parameter: gcp_endpoint_override
+            name: Endpoint override value
+            type: STRING
+          - parameter: gcs_default_metadata
+            name: open_output_stream default metadata
+            type: UNION[MAPPING, pyarrow.KeyValueMetadata]
+          - parameter: gcs_retry_time_limit
+            name: Google Cloud Platform retry time limit
+            type: TIMEDELTA
