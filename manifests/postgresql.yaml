@@ -86,8 +86,8 @@ blocks:
               user: {{ plugin_user }}
               password: <Password for {{ plugin_user }}>
               schemas_filter:
-                include: {{ include_patterns }}
-                exclude: {{ exclude_patterns }}
+                include: [{{ include_patterns|safe }}]
+                exclude: [{{ exclude_patterns|safe }}]
           ````
         arguments:
           - parameter: platform_url
@@ -113,7 +113,7 @@ blocks:
             type: STRING
           - parameter: include_patterns
             name: Schema name patterns to include
-            type: LIST[STRING]
+            type: STRING
           - parameter: exclude_patterns
             name: Schema name patterns to exclude
-            type: LIST[STRING]
+            type: STRING
