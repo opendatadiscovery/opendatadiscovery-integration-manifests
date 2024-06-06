@@ -65,9 +65,10 @@ blocks:
           # PostgreSQL user password
           password: password
           # Optional, if not provided all schemas from the database will be fetched
+          # Example patterns: generator input -> test, in.*prod, generator output -> ["test", "^in.*prod"]
           # more on filter topic: https://blog.opendatadiscovery.org/filters-to-include-and-exclude-objects-from-ingest-9fceff77133a
           schemas_filter:
-            include: [ patterns_to_include ] # Schema name patterns to include. Example: ['test', '^in.*prod'] 
+            include: [ patterns_to_include ] # Schema name patterns to include.
             exclude: [ patterns_to_exclude ] # Schema name patterns to exclude
       ````
     snippets:
@@ -86,8 +87,8 @@ blocks:
               user: {{ plugin_user }}
               password: <Password for {{ plugin_user }}>
               schemas_filter:
-                include: [{{ include_patterns|safe }}]
-                exclude: [{{ exclude_patterns|safe }}]
+                include: [{% for pattern in include_patterns.split(', ') %}"{{ pattern }}"{% if not loop.last %}, {% endif %}{% endfor %}]
+                exclude: [{% for pattern in exclude_patterns.split(', ') %}"{{ pattern }}"{% if not loop.last %}, {% endif %}{% endfor %}]
           ````
         arguments:
           - parameter: platform_url
