@@ -92,10 +92,10 @@ blocks:
           # Optional account locator, if omit, will be taken from host.
           account: account
           # Optional, if not provided all schemas from the database will be fetched
-          # Example patterns: generator input -> test, in.*prod, generator output -> ["test", "^in.*prod"]
-          # more on filter topic: https://blog.opendatadiscovery.org/filters-to-include-and-exclude-objects-from-ingest-9fceff77133a
+          # Example patterns (list of strings (regular expressions)): ["test", "^in.*prod"]
+          # More on filter topic: https://blog.opendatadiscovery.org/filters-to-include-and-exclude-objects-from-ingest-9fceff77133a
           schemas_filter:
-            include: [ patterns_to_include ] # Schema name patterns to include.
+            include: [ patterns_to_include ] # Schema name patterns to include
             exclude: [ patterns_to_exclude ] # Schema name patterns to exclude
       ````
     snippets:
@@ -115,9 +115,6 @@ blocks:
               account: {{ plugin_account }}
               database: {{ plugin_database }}
               warehouse: {{ plugin_warehouse }}
-              schemas_filter:
-                include: [{% for pattern in include_patterns.split(', ') %}"{{ pattern }}"{% if not loop.last %}, {% endif %}{% endfor %}]
-                exclude: [{% for pattern in exclude_patterns.split(', ') %}"{{ pattern }}"{% if not loop.last %}, {% endif %}{% endfor %}]
           ````
         arguments:
           - parameter: platform_url
@@ -146,10 +143,4 @@ blocks:
             type: STRING
           - parameter: plugin_account
             name: Account
-            type: STRING
-          - parameter: include_patterns
-            name: Schema name patterns to include
-            type: STRING
-          - parameter: exclude_patterns
-            name: Schema name patterns to exclude
             type: STRING
